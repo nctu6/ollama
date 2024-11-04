@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/ollama/ollama/envconfig"
+	"github.com/nctu6/unieai/envconfig"
 )
 
 // Determine if the given ROCm lib directory is usable by checking for existence of some glob patterns
@@ -43,9 +43,9 @@ func commonAMDValidateLibDir() (string, error) {
 	// Installer payload location if we're running the installed binary
 	exe, err := os.Executable()
 	if err == nil {
-		rocmTargetDir := filepath.Join(filepath.Dir(exe), envconfig.LibRelativeToExe(), "lib", "ollama")
+		rocmTargetDir := filepath.Join(filepath.Dir(exe), envconfig.LibRelativeToExe(), "lib", "unieai")
 		if rocmLibUsable(rocmTargetDir) {
-			slog.Debug("detected ROCM next to ollama executable " + rocmTargetDir)
+			slog.Debug("detected ROCM next to unieai executable " + rocmTargetDir)
 			return rocmTargetDir, nil
 		}
 	}

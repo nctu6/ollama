@@ -1,3 +1,3 @@
 # Examples
 
-This directory contains different examples of using Ollama.
+This directory contains different examples of using Unieai.

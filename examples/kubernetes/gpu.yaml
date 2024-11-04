@@ -2,27 +2,27 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: ollama
+  name: unieai
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ollama
-  namespace: ollama
+  name: unieai
+  namespace: unieai
 spec:
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      name: ollama
+      name: unieai
   template:
     metadata:
       labels:
-        name: ollama
+        name: unieai
     spec:
       containers:
-      - name: ollama
-        image: ollama/ollama:latest
+      - name: unieai
+        image: unieai/unieai:latest
         env:
         - name: PATH
           value: /usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -45,12 +45,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ollama
-  namespace: ollama
+  name: unieai
+  namespace: unieai
 spec:
   type: ClusterIP
   selector:
-    name: ollama
+    name: unieai
   ports:
   - port: 80
     name: http

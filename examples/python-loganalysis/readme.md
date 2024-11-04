@@ -1,6 +1,6 @@
 # Log Analysis example
 
-![loganalyzer 2023-11-10 08_53_29](https://github.com/ollama/ollama/assets/633681/ad30f1fc-321f-4953-8914-e30e24db9921)
+![loganalyzer 2023-11-10 08_53_29](https://github.com/nctu6/unieai/assets/633681/ad30f1fc-321f-4953-8914-e30e24db9921)
 
 This example shows one possible way to create a log file analyzer. It uses the model **mattw/loganalyzer** which is based on **codebooga**, a 34b parameter model.
 
@@ -15,7 +15,7 @@ You can try this with the `logtest.logfile` file included in this directory.
 1. Ensure you have the `mattw/loganalyzer` model installed:
 
    ```bash
-   ollama pull mattw/loganalyzer
+   unieai pull mattw/loganalyzer
    ```
 
 2. Install the Python Requirements.
@@ -42,7 +42,7 @@ You are a log file analyzer. You will receive a set of lines from a log file for
 """
 ```
 
-This model is available at https://ollama.com/mattw/loganalyzer. You can customize it and add to your own namespace using the command `ollama create <namespace/modelname> -f <path-to-modelfile>` then `ollama push <namespace/modelname>`.
+This model is available at https://unieai.com/mattw/loganalyzer. You can customize it and add to your own namespace using the command `unieai create <namespace/modelname> -f <path-to-modelfile>` then `unieai push <namespace/modelname>`.
 
 Then loganalysis.py scans all the lines in the given log file and searches for the word 'error'. When the word is found, the 10 lines before and after are set as the prompt for a call to the Generate API.
 

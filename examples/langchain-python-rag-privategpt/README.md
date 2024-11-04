@@ -1,6 +1,6 @@
 # PrivateGPT with Llama 2 uncensored
 
-https://github.com/ollama/ollama/assets/3325447/20cf8ec6-ff25-42c6-bdd8-9be594e3ce1b
+https://github.com/nctu6/unieai/assets/3325447/20cf8ec6-ff25-42c6-bdd8-9be594e3ce1b
 
 > Note: this example is a slightly modified version of PrivateGPT using models such as Llama 2 Uncensored. All credit for PrivateGPT goes to Iván Martínez who is the creator of it, and you can find his GitHub repo [here](https://github.com/imartinez/privateGPT).
 
@@ -22,7 +22,7 @@ pip install -r requirements.txt
 Pull the model you'd like to use:
 
 ```
-ollama pull llama2-uncensored
+unieai pull llama2-uncensored
 ```
 
 ### Getting WeWork's latest quarterly earnings report (10-Q)
@@ -65,7 +65,7 @@ As of June 2023, WeWork has 777 locations worldwide, including 610 Consolidated 
 ### Try a different model:
 
 ```
-ollama pull llama2:13b
+unieai pull llama2:13b
 MODEL=llama2:13b python privateGPT.py
 ```
 

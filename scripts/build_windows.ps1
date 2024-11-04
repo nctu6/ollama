@@ -37,7 +37,7 @@ function checkEnv() {
     } else {
         $script:CUDA_DIRS=$cudaList
     }
-    
+
     $inoSetup=(get-item "C:\Program Files*\Inno Setup*\")
     if ($inoSetup.length -gt 0) {
         $script:INNO_SETUP_DIR=$inoSetup[0]
@@ -61,7 +61,7 @@ function checkEnv() {
     } else {
         $script:PKG_VERSION="0.0.0"
     }
-    write-host "Building Ollama $script:VERSION with package version $script:PKG_VERSION"
+    write-host "Building Unieai $script:VERSION with package version $script:PKG_VERSION"
 
     # Note: Windows Kits 10 signtool crashes with GCP's plugin
     if ($null -eq $env:SIGN_TOOL) {
@@ -70,35 +70,35 @@ function checkEnv() {
         ${script:SignTool}=${env:SIGN_TOOL}
     }
     if ("${env:KEY_CONTAINER}") {
-        ${script:OLLAMA_CERT}=$(resolve-path "${script:SRC_DIR}\ollama_inc.crt")
+        ${script:unieai_CERT}=$(resolve-path "${script:SRC_DIR}\unieai_inc.crt")
         Write-host "Code signing enabled"
     } else {
-        write-host "Code signing disabled - please set KEY_CONTAINERS to sign and copy ollama_inc.crt to the top of the source tree"
+        write-host "Code signing disabled - please set KEY_CONTAINERS to sign and copy unieai_inc.crt to the top of the source tree"
     }
 }
 
 
-function buildOllama() {
-    if ($null -eq ${env:OLLAMA_SKIP_GENERATE}) {
-        write-host "Building ollama runners"
+function buildUnieai() {
+    if ($null -eq ${env:unieai_SKIP_GENERATE}) {
+        write-host "Building unieai runners"
         Remove-Item -ea 0 -recurse -force -path "${script:SRC_DIR}\dist\windows-${script:ARCH}"
         & make -C llama -j 12
         if ($LASTEXITCODE -ne 0) { exit($LASTEXITCODE)}
     } else {
-        write-host "Skipping generate step with OLLAMA_SKIP_GENERATE set"
+        write-host "Skipping generate step with unieai_SKIP_GENERATE set"
     }
-    write-host "Building ollama CLI"
-    & go build -trimpath -ldflags "-s -w -X=github.com/ollama/ollama/version.Version=$script:VERSION -X=github.com/ollama/ollama/server.mode=release" .
+    write-host "Building unieai CLI"
+    & go build -trimpath -ldflags "-s -w -X=github.com/nctu6/unieai/version.Version=$script:VERSION -X=github.com/nctu6/unieai/server.mode=release" .
     if ($LASTEXITCODE -ne 0) { exit($LASTEXITCODE)}
     New-Item -ItemType Directory -Path .\dist\windows-${script:TARGET_ARCH}\ -Force
-    cp .\ollama.exe .\dist\windows-${script:TARGET_ARCH}\
+    cp .\unieai.exe .\dist\windows-${script:TARGET_ARCH}\
 }
 
 function buildApp() {
-    write-host "Building Ollama App"
+    write-host "Building Unieai App"
     cd "${script:SRC_DIR}\app"
-    & windres -l 0 -o ollama.syso ollama.rc
-    & go build -trimpath -ldflags "-s -w -H windowsgui -X=github.com/ollama/ollama/version.Version=$script:VERSION -X=github.com/ollama/ollama/server.mode=release" -o "${script:SRC_DIR}\dist\windows-${script:TARGET_ARCH}-app.exe" .
+    & windres -l 0 -o unieai.syso unieai.rc
+    & go build -trimpath -ldflags "-s -w -H windowsgui -X=github.com/nctu6/unieai/version.Version=$script:VERSION -X=github.com/nctu6/unieai/server.mode=release" -o "${script:SRC_DIR}\dist\windows-${script:TARGET_ARCH}-app.exe" .
     if ($LASTEXITCODE -ne 0) { exit($LASTEXITCODE)}
 }
 
@@ -109,7 +109,7 @@ function gatherDependencies() {
     }
     write-host "Gathering runtime dependencies from $env:VCToolsRedistDir"
     cd "${script:SRC_DIR}"
-    md "${script:DIST_DIR}\lib\ollama" -ea 0 > $null
+    md "${script:DIST_DIR}\lib\unieai" -ea 0 > $null
 
     # TODO - this varies based on host build system and MSVC version - drive from dumpbin output
     # currently works for Win11 + MSVC 2019 + Cuda V11
@@ -119,28 +119,28 @@ function gatherDependencies() {
         $depArch=$script:TARGET_ARCH
     }
     if ($depArch -eq "x64") {
-        cp "${env:VCToolsRedistDir}\${depArch}\Microsoft.VC*.CRT\msvcp140*.dll" "${script:DIST_DIR}\lib\ollama\"
-        cp "${env:VCToolsRedistDir}\${depArch}\Microsoft.VC*.CRT\vcruntime140.dll" "${script:DIST_DIR}\lib\ollama\"
-        cp "${env:VCToolsRedistDir}\${depArch}\Microsoft.VC*.CRT\vcruntime140_1.dll" "${script:DIST_DIR}\lib\ollama\"
+        cp "${env:VCToolsRedistDir}\${depArch}\Microsoft.VC*.CRT\msvcp140*.dll" "${script:DIST_DIR}\lib\unieai\"
+        cp "${env:VCToolsRedistDir}\${depArch}\Microsoft.VC*.CRT\vcruntime140.dll" "${script:DIST_DIR}\lib\unieai\"
+        cp "${env:VCToolsRedistDir}\${depArch}\Microsoft.VC*.CRT\vcruntime140_1.dll" "${script:DIST_DIR}\lib\unieai\"
         $llvmCrtDir="$env:VCToolsRedistDir\..\..\..\Tools\Llvm\${depArch}\bin"
         foreach ($part in $("runtime", "stdio", "filesystem", "math", "convert", "heap", "string", "time", "locale", "environment")) {
-            write-host "cp ${llvmCrtDir}\api-ms-win-crt-${part}*.dll ${script:DIST_DIR}\lib\ollama\"
-            cp "${llvmCrtDir}\api-ms-win-crt-${part}*.dll" "${script:DIST_DIR}\lib\ollama\"
+            write-host "cp ${llvmCrtDir}\api-ms-win-crt-${part}*.dll ${script:DIST_DIR}\lib\unieai\"
+            cp "${llvmCrtDir}\api-ms-win-crt-${part}*.dll" "${script:DIST_DIR}\lib\unieai\"
         }
     } else {
         # Carying the dll's doesn't seem to work, so use the redist installer
         copy-item -path "${env:VCToolsRedistDir}\vc_redist.arm64.exe" -destination "${script:DIST_DIR}" -verbose
     }
 
-    cp "${script:SRC_DIR}\app\ollama_welcome.ps1" "${script:SRC_DIR}\dist\"
+    cp "${script:SRC_DIR}\app\unieai_welcome.ps1" "${script:SRC_DIR}\dist\"
 }
 
 function sign() {
     if ("${env:KEY_CONTAINER}") {
-        write-host "Signing Ollama executables, scripts and libraries"
-        & "${script:SignTool}" sign /v /fd sha256 /t http://timestamp.digicert.com /f "${script:OLLAMA_CERT}" `
+        write-host "Signing Unieai executables, scripts and libraries"
+        & "${script:SignTool}" sign /v /fd sha256 /t http://timestamp.digicert.com /f "${script:unieai_CERT}" `
             /csp "Google Cloud KMS Provider" /kc ${env:KEY_CONTAINER} `
-            $(get-childitem -path "${script:SRC_DIR}\dist" -r -include @('ollama_welcome.ps1')) `
+            $(get-childitem -path "${script:SRC_DIR}\dist" -r -include @('unieai_welcome.ps1')) `
             $(get-childitem -path "${script:SRC_DIR}\dist\windows-*" -r -include @('*.exe', '*.dll'))
         if ($LASTEXITCODE -ne 0) { exit($LASTEXITCODE)}
     } else {
@@ -153,26 +153,26 @@ function buildInstaller() {
         write-host "Inno Setup not present, skipping installer build"
         return
     }
-    write-host "Building Ollama Installer"
+    write-host "Building Unieai Installer"
     cd "${script:SRC_DIR}\app"
     $env:PKG_VERSION=$script:PKG_VERSION
     if ("${env:KEY_CONTAINER}") {
-        & "${script:INNO_SETUP_DIR}\ISCC.exe" /DARCH=$script:TARGET_ARCH /SMySignTool="${script:SignTool} sign /fd sha256 /t http://timestamp.digicert.com /f ${script:OLLAMA_CERT} /csp `$qGoogle Cloud KMS Provider`$q /kc ${env:KEY_CONTAINER} `$f" .\ollama.iss
+        & "${script:INNO_SETUP_DIR}\ISCC.exe" /DARCH=$script:TARGET_ARCH /SMySignTool="${script:SignTool} sign /fd sha256 /t http://timestamp.digicert.com /f ${script:unieai_CERT} /csp `$qGoogle Cloud KMS Provider`$q /kc ${env:KEY_CONTAINER} `$f" .\unieai.iss
     } else {
-        & "${script:INNO_SETUP_DIR}\ISCC.exe" /DARCH=$script:TARGET_ARCH .\ollama.iss
+        & "${script:INNO_SETUP_DIR}\ISCC.exe" /DARCH=$script:TARGET_ARCH .\unieai.iss
     }
     if ($LASTEXITCODE -ne 0) { exit($LASTEXITCODE)}
 }
 
 function distZip() {
-    write-host "Generating stand-alone distribution zip file ${script:SRC_DIR}\dist\ollama-windows-${script:TARGET_ARCH}.zip"
-    Compress-Archive -Path "${script:SRC_DIR}\dist\windows-${script:TARGET_ARCH}\*" -DestinationPath "${script:SRC_DIR}\dist\ollama-windows-${script:TARGET_ARCH}.zip" -Force
+    write-host "Generating stand-alone distribution zip file ${script:SRC_DIR}\dist\unieai-windows-${script:TARGET_ARCH}.zip"
+    Compress-Archive -Path "${script:SRC_DIR}\dist\windows-${script:TARGET_ARCH}\*" -DestinationPath "${script:SRC_DIR}\dist\unieai-windows-${script:TARGET_ARCH}.zip" -Force
 }
 
 checkEnv
 try {
     if ($($args.count) -eq 0) {
-        buildOllama
+        buildUnieai
         buildApp
         gatherDependencies
         sign
@@ -182,7 +182,7 @@ try {
         for ( $i = 0; $i -lt $args.count; $i++ ) {
             write-host "performing $($args[$i])"
             & $($args[$i])
-        } 
+        }
     }
 } catch {
     write-host "Build Failed"

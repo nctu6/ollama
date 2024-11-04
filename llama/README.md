@@ -93,7 +93,7 @@ make -j
 
 ## Vendoring
 
-Ollama currently vendors [llama.cpp](https://github.com/ggerganov/llama.cpp/) and [ggml](https://github.com/ggerganov/ggml) through a vendoring model.  While we generally strive to contribute changes back upstream to avoid drift, we cary a small set of patches which are applied to the tracking commit.  A set of make targets are available to aid developers in updating to a newer tracking commit, or to work on changes.
+Unieai currently vendors [llama.cpp](https://github.com/ggerganov/llama.cpp/) and [ggml](https://github.com/ggerganov/ggml) through a vendoring model.  While we generally strive to contribute changes back upstream to avoid drift, we cary a small set of patches which are applied to the tracking commit.  A set of make targets are available to aid developers in updating to a newer tracking commit, or to work on changes.
 
 If you update the vendoring code, start by running the following command to establish the tracking llama.cpp repo in the `./vendor/` directory.
 
@@ -123,7 +123,7 @@ If you see an error message about a conflict, go into the `./vendor/` directory,
 make create-patches sync
 ```
 
-Build and test Ollama, and make any necessary changes to the Go code based on the new base commit.  Submit your PR to the Ollama repo.
+Build and test Unieai, and make any necessary changes to the Go code based on the new base commit.  Submit your PR to the Unieai repo.
 
 ### Generating Patches
 
@@ -133,7 +133,7 @@ When working on new fixes or features that impact vendored code, use the followi
 make apply-patches
 ```
 
-Now edit the upstream native code in the `./vendor/` directory.  You do not need to commit every change in order to build, a dirty working tree in the tracking repo is OK while developing.  Simply save in your editor, and run the following to refresh the vendored code with your changes, build the backend(s) and build ollama:
+Now edit the upstream native code in the `./vendor/` directory.  You do not need to commit every change in order to build, a dirty working tree in the tracking repo is OK while developing.  Simply save in your editor, and run the following to refresh the vendored code with your changes, build the backend(s) and build unieai:
 
 ```
 make sync
@@ -144,7 +144,7 @@ go build .
 > [!IMPORTANT]
 > Do **NOT** run `apply-patches` while you're iterating as that will reset the tracking repo.  It will detect a dirty tree and abort, but if your tree is clean and you accidentally ran this target, use `git reflog` to recover your commit(s).
 
-Iterate until you're ready to submit PRs.  Once your code is ready, commit a change in the `./vendor/` directory, then generate the patches for ollama with
+Iterate until you're ready to submit PRs.  Once your code is ready, commit a change in the `./vendor/` directory, then generate the patches for unieai with
 
 ```
 make create-patches
@@ -155,6 +155,6 @@ make create-patches
 
 In your `./vendor/` directory, create a branch, and cherry-pick the new commit to that branch, then submit a PR upstream to llama.cpp.
 
-Commit the changes in the ollama repo and submit a PR to Ollama, which will include the vendored code update with your change, along with the patches.
+Commit the changes in the unieai repo and submit a PR to Unieai, which will include the vendored code update with your change, along with the patches.
 
 After your PR upstream is merged, follow the **Updating Base Commit** instructions above, however first remove your patch before running `apply-patches` since the new base commit contains your change already.

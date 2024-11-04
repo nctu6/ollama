@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ollama/ollama/api"
+	"github.com/nctu6/unieai/api"
 )
 
 func main() {

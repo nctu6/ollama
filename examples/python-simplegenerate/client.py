@@ -1,7 +1,7 @@
 import json
 import requests
 
-# NOTE: ollama must be running for this to work, start the ollama app or run `ollama serve`
+# NOTE: unieai must be running for this to work, start the unieai app or run `unieai serve`
 model = 'stablelm-zephyr' # TODO: update this for whatever model you wish to use
 
 def generate(prompt, context):

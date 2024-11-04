@@ -2,10 +2,10 @@
 
 ## Install
 
-To install Ollama, run the following command:
+To install Unieai, run the following command:
 
 ```shell
-curl -fsSL https://ollama.com/install.sh | sh
+curl -fsSL https://unieai.com/install.sh | sh
 ```
 
 ## Manual install
@@ -13,20 +13,20 @@ curl -fsSL https://ollama.com/install.sh | sh
 Download and extract the package:
 
 ```shell
-curl -L https://ollama.com/download/ollama-linux-amd64.tgz -o ollama-linux-amd64.tgz
-sudo tar -C /usr -xzf ollama-linux-amd64.tgz
+curl -L https://unieai.com/download/unieai-linux-amd64.tgz -o unieai-linux-amd64.tgz
+sudo tar -C /usr -xzf unieai-linux-amd64.tgz
 ```
 
-Start Ollama:
+Start Unieai:
 
 ```shell
-ollama serve
+unieai serve
 ```
 
-In another terminal, verify that Ollama is running:
+In another terminal, verify that Unieai is running:
 
 ```shell
-ollama -v
+unieai -v
 ```
 
 ### AMD GPU install
@@ -34,8 +34,8 @@ ollama -v
 If you have an AMD GPU, also download and extract the additional ROCm package:
 
 ```shell
-curl -L https://ollama.com/download/ollama-linux-amd64-rocm.tgz -o ollama-linux-amd64-rocm.tgz
-sudo tar -C /usr -xzf ollama-linux-amd64-rocm.tgz
+curl -L https://unieai.com/download/unieai-linux-amd64-rocm.tgz -o unieai-linux-amd64-rocm.tgz
+sudo tar -C /usr -xzf unieai-linux-amd64-rocm.tgz
 ```
 
 ### ARM64 install
@@ -43,30 +43,30 @@ sudo tar -C /usr -xzf ollama-linux-amd64-rocm.tgz
 Download and extract the ARM64-specific package:
 
 ```shell
-curl -L https://ollama.com/download/ollama-linux-arm64.tgz -o ollama-linux-arm64.tgz
-sudo tar -C /usr -xzf ollama-linux-arm64.tgz
+curl -L https://unieai.com/download/unieai-linux-arm64.tgz -o unieai-linux-arm64.tgz
+sudo tar -C /usr -xzf unieai-linux-arm64.tgz
 ```
 
-### Adding Ollama as a startup service (recommended)
+### Adding Unieai as a startup service (recommended)
 
-Create a user and group for Ollama:
+Create a user and group for Unieai:
 
 ```shell
-sudo useradd -r -s /bin/false -U -m -d /usr/share/ollama ollama
-sudo usermod -a -G ollama $(whoami)
+sudo useradd -r -s /bin/false -U -m -d /usr/share/unieai unieai
+sudo usermod -a -G unieai $(whoami)
 ```
 
-Create a service file in `/etc/systemd/system/ollama.service`:
+Create a service file in `/etc/systemd/system/unieai.service`:
 
 ```ini
 [Unit]
-Description=Ollama Service
+Description=Unieai Service
 After=network-online.target
 
 [Service]
-ExecStart=/usr/bin/ollama serve
-User=ollama
-Group=ollama
+ExecStart=/usr/bin/unieai serve
+User=unieai
+Group=unieai
 Restart=always
 RestartSec=3
 Environment="PATH=$PATH"
@@ -79,7 +79,7 @@ Then start the service:
 
 ```shell
 sudo systemctl daemon-reload
-sudo systemctl enable ollama
+sudo systemctl enable unieai
 ```
 
 ### Install CUDA drivers (optional)
@@ -96,13 +96,13 @@ nvidia-smi
 
 [Download and Install](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/tutorial/quick-start.html) ROCm v6.
 
-### Start Ollama
+### Start Unieai
 
-Start Ollama and verify it is running:
+Start Unieai and verify it is running:
 
 ```shell
-sudo systemctl start ollama
-sudo systemctl status ollama
+sudo systemctl start unieai
+sudo systemctl status unieai
 ```
 
 > [!NOTE]
@@ -114,57 +114,57 @@ sudo systemctl status ollama
 
 ## Updating
 
-Update Ollama by running the install script again:
+Update Unieai by running the install script again:
 
 ```shell
-curl -fsSL https://ollama.com/install.sh | sh
+curl -fsSL https://unieai.com/install.sh | sh
 ```
 
-Or by re-downloading Ollama:
+Or by re-downloading Unieai:
 
 ```shell
-curl -L https://ollama.com/download/ollama-linux-amd64.tgz -o ollama-linux-amd64.tgz
-sudo tar -C /usr -xzf ollama-linux-amd64.tgz
+curl -L https://unieai.com/download/unieai-linux-amd64.tgz -o unieai-linux-amd64.tgz
+sudo tar -C /usr -xzf unieai-linux-amd64.tgz
 ```
 
 ## Installing specific versions
 
-Use `OLLAMA_VERSION` environment variable with the install script to install a specific version of Ollama, including pre-releases. You can find the version numbers in the [releases page](https://github.com/ollama/ollama/releases). 
+Use `UNIEAI_VERSION` environment variable with the install script to install a specific version of Unieai, including pre-releases. You can find the version numbers in the [releases page](https://github.com/nctu6/unieai/releases).
 
 For example:
 
 ```shell
-curl -fsSL https://ollama.com/install.sh | OLLAMA_VERSION=0.3.9 sh
+curl -fsSL https://unieai.com/install.sh | UNIEAI_VERSION=0.3.9 sh
 ```
 
 ## Viewing logs
 
-To view logs of Ollama running as a startup service, run:
+To view logs of Unieai running as a startup service, run:
 
 ```shell
-journalctl -e -u ollama
+journalctl -e -u unieai
 ```
 
 ## Uninstall
 
-Remove the ollama service:
+Remove the unieai service:
 
 ```shell
-sudo systemctl stop ollama
-sudo systemctl disable ollama
-sudo rm /etc/systemd/system/ollama.service
+sudo systemctl stop unieai
+sudo systemctl disable unieai
+sudo rm /etc/systemd/system/unieai.service
 ```
 
-Remove the ollama binary from your bin directory (either `/usr/local/bin`, `/usr/bin`, or `/bin`):
+Remove the unieai binary from your bin directory (either `/usr/local/bin`, `/usr/bin`, or `/bin`):
 
 ```shell
-sudo rm $(which ollama)
+sudo rm $(which unieai)
 ```
 
-Remove the downloaded models and Ollama service user and group:
+Remove the downloaded models and Unieai service user and group:
 
 ```shell
-sudo rm -r /usr/share/ollama
-sudo userdel ollama
-sudo groupdel ollama
+sudo rm -r /usr/share/unieai
+sudo userdel unieai
+sudo groupdel unieai
 ```

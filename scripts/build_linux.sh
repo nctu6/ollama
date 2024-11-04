@@ -17,13 +17,13 @@ mkdir -p dist
 docker buildx build \
         --output type=local,dest=./dist/ \
         --platform=${PLATFORM} \
-        ${OLLAMA_COMMON_BUILD_ARGS} \
+        ${UNIEAI_COMMON_BUILD_ARGS} \
         --target dist \
         -f Dockerfile \
         .
 
 # buildx behavior changes for single vs. multiplatform
-if echo $PLATFORM | grep "," > /dev/null ; then 
-        mv -f ./dist/linux_*64/ollama* ./dist/
+if echo $PLATFORM | grep "," > /dev/null ; then
+        mv -f ./dist/linux_*64/unieai* ./dist/
         rmdir ./dist/linux_*64
 fi

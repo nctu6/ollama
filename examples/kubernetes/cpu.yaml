@@ -2,25 +2,25 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: ollama
+  name: unieai
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ollama
-  namespace: ollama
+  name: unieai
+  namespace: unieai
 spec:
   selector:
     matchLabels:
-      name: ollama
+      name: unieai
   template:
     metadata:
       labels:
-        name: ollama
+        name: unieai
     spec:
       containers:
-      - name: ollama
-        image: ollama/ollama:latest
+      - name: unieai
+        image: unieai/unieai:latest
         ports:
         - name: http
           containerPort: 11434
@@ -29,12 +29,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ollama
-  namespace: ollama
+  name: unieai
+  namespace: unieai
 spec:
   type: ClusterIP
   selector:
-    name: ollama
+    name: unieai
   ports:
   - port: 80
     name: http

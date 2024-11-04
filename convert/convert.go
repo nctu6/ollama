@@ -9,7 +9,7 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/ollama/ollama/llm"
+	"github.com/nctu6/unieai/llm"
 )
 
 type ModelParameters struct {
@@ -156,7 +156,7 @@ func ConvertAdapter(fsys fs.FS, ws io.WriteSeeker, baseKV llm.KV) error {
 	return conv.writeFile(ws, conv.KV(baseKV), conv.Tensors(ts))
 }
 
-// Convert writes an Ollama compatible model to the provided io.WriteSeeker based on configurations
+// Convert writes an Unieai compatible model to the provided io.WriteSeeker based on configurations
 // and files it finds in the input path.
 // Supported input model formats include safetensors.
 // Supported input tokenizers files include tokenizer.json (preferred) and tokenizer.model.

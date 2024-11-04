@@ -7,7 +7,7 @@ This example provides an interface for asking questions to a PDF document.
 1. Ensure you have the `llama3.2` model installed:
 
 ```
-ollama pull llama3.2
+unieai pull llama3.2
 ```
 
 2. Install the Python Requirements.

@@ -5,9 +5,9 @@ package tray
 import (
 	"errors"
 
-	"github.com/ollama/ollama/app/tray/commontray"
+	"github.com/nctu6/unieai/app/tray/commontray"
 )
 
-func InitPlatformTray(icon, updateIcon []byte) (commontray.OllamaTray, error) {
+func InitPlatformTray(icon, updateIcon []byte) (commontray.UnieaiTray, error) {
 	return nil, errors.New("not implemented")
 }

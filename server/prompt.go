@@ -9,10 +9,10 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/llm"
-	"github.com/ollama/ollama/server/imageproc"
-	"github.com/ollama/ollama/template"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/llm"
+	"github.com/nctu6/unieai/server/imageproc"
+	"github.com/nctu6/unieai/template"
 )
 
 type tokenizeFunc func(context.Context, string) ([]int, error)

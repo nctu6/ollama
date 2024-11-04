@@ -20,8 +20,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/llama"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/llama"
 )
 
 // input is an element of the prompt to process, either

@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ollama/ollama/format"
+	"github.com/nctu6/unieai/format"
 )
 
 var CudartGlobs = []string{

@@ -20,8 +20,8 @@ import (
 	"sync"
 	"unsafe"
 
-	"github.com/ollama/ollama/envconfig"
-	"github.com/ollama/ollama/format"
+	"github.com/nctu6/unieai/envconfig"
+	"github.com/nctu6/unieai/format"
 )
 
 type cudaHandles struct {
@@ -73,7 +73,7 @@ const IGPUMemLimit = 1 * format.GibiByte // 512G is what they typically report, 
 
 // Note: gpuMutex must already be held
 func initCudaHandles() *cudaHandles {
-	// TODO - if the ollama build is CPU only, don't do these checks as they're irrelevant and confusing
+	// TODO - if the unieai build is CPU only, don't do these checks as they're irrelevant and confusing
 
 	cHandles := &cudaHandles{}
 	// Short Circuit if we already know which library to use
@@ -99,7 +99,7 @@ func initCudaHandles() *cudaHandles {
 
 	if runtime.GOOS == "windows" {
 		localAppData := os.Getenv("LOCALAPPDATA")
-		cudartMgmtPatterns = []string{filepath.Join(localAppData, "Programs", "Ollama", CudartMgmtName)}
+		cudartMgmtPatterns = []string{filepath.Join(localAppData, "Programs", "Unieai", CudartMgmtName)}
 	}
 	libDir := LibraryDir()
 	if libDir != "" {
@@ -609,7 +609,7 @@ func loadNVCUDAMgmt(nvcudaLibPaths []string) (int, *C.nvcuda_handle_t, string, e
 				err = fmt.Errorf("no nvidia devices detected by library %s", libPath)
 				slog.Info(err.Error())
 			case C.CUDA_ERROR_UNKNOWN:
-				err = fmt.Errorf("unknown error initializing cuda driver library %s: %s. see https://github.com/ollama/ollama/blob/main/docs/troubleshooting.md for more information", libPath, C.GoString(resp.err))
+				err = fmt.Errorf("unknown error initializing cuda driver library %s: %s. see https://github.com/nctu6/unieai/blob/main/docs/troubleshooting.md for more information", libPath, C.GoString(resp.err))
 				slog.Warn(err.Error())
 			default:
 				msg := C.GoString(resp.err)
@@ -717,7 +717,7 @@ func LibraryDir() string {
 	}
 	// Scan for any of our dependeices, and pick first match
 	for _, root := range []string{filepath.Dir(appExe), filepath.Join(filepath.Dir(appExe), envconfig.LibRelativeToExe()), cwd} {
-		libDep := filepath.Join("lib", "ollama")
+		libDep := filepath.Join("lib", "unieai")
 		if _, err := os.Stat(filepath.Join(root, libDep)); err == nil {
 			return filepath.Join(root, libDep)
 		}

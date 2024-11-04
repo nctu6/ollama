@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ollama/ollama/api"
+	"github.com/nctu6/unieai/api"
 	"github.com/stretchr/testify/require"
 )
 
@@ -28,8 +28,8 @@ func TestIntegrationLlava(t *testing.T) {
 		},
 	}
 
-	// Note: sometimes it returns "the ollamas" sometimes "the ollams"
-	resp := "the ollam"
+	// Note: sometimes it returns "the unieais" sometimes "the unies"
+	resp := "the unieai"
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
 	defer cancel()
 	client, _, cleanup := InitServerConnection(ctx, t)
@@ -56,7 +56,7 @@ func TestIntegrationMllama(t *testing.T) {
 		},
 	}
 
-	resp := "the ollamas"
+	resp := "the unieais"
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 	client, _, cleanup := InitServerConnection(ctx, t)

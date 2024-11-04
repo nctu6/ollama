@@ -1,15 +1,15 @@
 # RAG Hallucination Checker using Bespoke-Minicheck
 
-This example allows the user to ask questions related to a document, which can be specified via an article url. Relevant chunks are retreived from the document and given to `llama3.2` as context to answer the question. Then each sentence in the answer is checked against the retrieved chunks using `bespoke-minicheck` to ensure that the answer does not contain hallucinations. 
+This example allows the user to ask questions related to a document, which can be specified via an article url. Relevant chunks are retreived from the document and given to `llama3.2` as context to answer the question. Then each sentence in the answer is checked against the retrieved chunks using `bespoke-minicheck` to ensure that the answer does not contain hallucinations.
 
 ## Running the Example
 
 1. Ensure `all-minilm` (embedding) `llama3.2` (chat) and `bespoke-minicheck` (check) models installed:
 
    ```bash
-   ollama pull all-minilm
-   ollama pull llama3.2
-   ollama pull bespoke-minicheck
+   unieai pull all-minilm
+   unieai pull llama3.2
+   unieai pull bespoke-minicheck
    ```
 
 2. Install the dependencies.
@@ -52,7 +52,7 @@ LLM Claim: It only discusses the release of a new model called o1 and some detai
 Is this claim supported by the context according to bespoke-minicheck? No
 ```
 
-The second claim is unsupported since the text mentions the research lead. 
+The second claim is unsupported since the text mentions the research lead.
 
 Another tricky example:
 
@@ -60,7 +60,7 @@ Another tricky example:
 
 Enter your question or type quit: what sets o1 apart from gpt-4o?
 
-Retrieved chunks: 
+Retrieved chunks:
 OpenAI says it plans to bring o1-mini access to all the free users of ChatGPT but hasn ’ t set a release date yet . Developer access to o1 is really expensive : In the API , o1-preview is $ 15 per 1 million input tokens , or chunks of text parsed by the model , and $ 60 per 1 million output tokens . For comparison , GPT-4o costs $ 5 per 1 million input tokens and $ 15 per 1 million output tokens . The training behind o1 is fundamentally different from its predecessors , OpenAI ’ s research lead , Jerry Tworek , tells me , though the company is being vague about the exact details . He says o1 “ has been trained using a completely new optimization algorithm and a new training dataset specifically tailored for it. ” Image : OpenAI OpenAI taught previous GPT models to mimic patterns from its training data .
 
 He says OpenAI also tested o1 against a qualifying exam for the International Mathematics Olympiad , and while GPT-4o only correctly solved only 13 percent of problems , o1 scored 83 percent . “ We can ’ t say we solved hallucinations ” In online programming contests known as Codeforces competitions , this new model reached the 89th percentile of participants , and OpenAI claims the next update of this model will perform “ similarly to PhD students on challenging benchmark tasks in physics , chemistry and biology. ” At the same time , o1 is not as capable as GPT-4o in a lot of areas . It doesn ’ t do as well on factual knowledge about the world .

@@ -15,8 +15,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/auth"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/auth"
 )
 
 type registryChallenge struct {

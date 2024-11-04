@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/ollama/ollama/llama"
-	"github.com/ollama/ollama/version"
+	"github.com/nctu6/unieai/llama"
+	"github.com/nctu6/unieai/version"
 )
 
 func printRequirements(fp *os.File) {

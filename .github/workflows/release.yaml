@@ -56,8 +56,8 @@ jobs:
         with:
           name: dist-darwin
           path: |
-            dist/Ollama-darwin.zip
-            dist/ollama-darwin
+            dist/Unieai-darwin.zip
+            dist/unieai-darwin
 
   # Windows builds take a long time to both install the dependencies and build, so parallelize
   # CPU generation step
@@ -219,7 +219,7 @@ jobs:
         run: |
           & (resolve-path "c:\Program Files\NVIDIA*\CUDA\v*\bin\nvcc.exe")[0] --version
           $cudaPath=((resolve-path "c:\Program Files\NVIDIA*\CUDA\v*\bin\nvcc.exe")[0].path | split-path | split-path)
-          $cudaVer=($cudaPath | split-path -leaf ) -replace 'v(\d+).(\d+)', '$1_$2' 
+          $cudaVer=($cudaPath | split-path -leaf ) -replace 'v(\d+).(\d+)', '$1_$2'
           echo "$cudaPath\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "CUDA_PATH=$cudaPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           echo "CUDA_PATH_V${cudaVer}=$cudaPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -345,9 +345,9 @@ jobs:
           echo VERSION=$ver | Out-File -FilePath ${env:GITHUB_ENV} -Encoding utf8 -Append
       - uses: 'google-github-actions/auth@v2'
         with:
-          project_id: 'ollama'
+          project_id: 'unieai'
           credentials_json: '${{ secrets.GOOGLE_SIGNING_CREDENTIALS }}'
-      - run: echo "${{ vars.OLLAMA_CERT }}" | Out-File -FilePath ollama_inc.crt -Encoding utf8
+      - run: echo "${{ vars.unieai_CERT }}" | Out-File -FilePath unieai_inc.crt -Encoding utf8
       - name: install Windows SDK 8.1 to get signtool
         run: |
           $ErrorActionPreference = "Stop"
@@ -378,7 +378,7 @@ jobs:
           $env:PATH="$gopath;$gccpath;$env:PATH"
           echo $env:PATH
           $env:ARCH="arm64"
-          .\scripts\build_windows.ps1 buildOllama buildApp gatherDependencies distZip
+          .\scripts\build_windows.ps1 buildUnieai buildApp gatherDependencies distZip
         name: 'Windows Build'
       - uses: actions/upload-artifact@v4
         with:
@@ -386,7 +386,7 @@ jobs:
           path: |
             dist/windows-arm64/**
             dist/windows-arm64-app.exe
-            dist/ollama-windows-arm64.zip
+            dist/unieai-windows-arm64.zip
 
   # Import the prior generation steps plus the full arm64 build, and build the final windows assets
   build-windows:
@@ -408,9 +408,9 @@ jobs:
         run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
       - uses: 'google-github-actions/auth@v2'
         with:
-          project_id: 'ollama'
+          project_id: 'unieai'
           credentials_json: '${{ secrets.GOOGLE_SIGNING_CREDENTIALS }}'
-      - run: echo "${{ vars.OLLAMA_CERT }}" > ollama_inc.crt
+      - run: echo "${{ vars.unieai_CERT }}" > unieai_inc.crt
       - name: install Windows SDK 8.1 to get signtool
         run: |
           $ErrorActionPreference = "Stop"
@@ -471,7 +471,7 @@ jobs:
       - run: |
           import-module 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\Microsoft.VisualStudio.DevShell.dll'
           Enter-VsDevShell -vsinstallpath 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise' -skipautomaticlocation -DevCmdArguments '-arch=x64 -no_logo'
-          $env:OLLAMA_SKIP_GENERATE="1"
+          $env:unieai_SKIP_GENERATE="1"
           $env:ARCH="amd64"
           if (!(gcc --version | select-string -quiet clang)) { throw "wrong gcc compiler detected - must be clang" }
           & .\scripts\build_windows.ps1
@@ -479,8 +479,8 @@ jobs:
         with:
           name: dist-windows
           path: |
-            dist/OllamaSetup.exe
-            dist/ollama-windows-*.zip
+            dist/UnieaiSetup.exe
+            dist/unieai-windows-*.zip
 
   # Linux x86 assets built using the container based build
   build-linux-amd64:
@@ -558,7 +558,7 @@ jobs:
           - linux-arm64
     runs-on: ${{ matrix.runner }}
     env:
-      FINAL_IMAGE_REPO: ollama/ollama
+      FINAL_IMAGE_REPO: unieai/unieai
     steps:
       - uses: actions/checkout@v4
         with:
@@ -597,7 +597,7 @@ jobs:
             x86_64) echo ARCH=amd64; echo PLATFORM_PAIR=linux-amd64 ;;
             aarch64) echo ARCH=arm64; echo PLATFORM_PAIR=linux-arm64 ;;
           esac >>$GITHUB_ENV
-          echo GOFLAGS="'-ldflags=-w -s \"-X=github.com/ollama/ollama/version.Version=${{ env.DOCKER_METADATA_OUTPUT_VERSION }}\" \"-X=github.com/ollama/ollama/server.mode=release\"'" >>$GITHUB_ENV
+          echo GOFLAGS="'-ldflags=-w -s \"-X=github.com/nctu6/unieai/version.Version=${{ env.DOCKER_METADATA_OUTPUT_VERSION }}\" \"-X=github.com/nctu6/unieai/server.mode=release\"'" >>$GITHUB_ENV
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to Docker Hub
@@ -632,7 +632,7 @@ jobs:
     needs:
       - build-container-image
     env:
-      FINAL_IMAGE_REPO: ollama/ollama
+      FINAL_IMAGE_REPO: unieai/unieai
     steps:
       - uses: actions/checkout@v4
         with:
@@ -663,7 +663,7 @@ jobs:
             x86_64) echo ARCH=amd64; echo PLATFORM_PAIR=linux-amd64 ;;
             aarch64) echo ARCH=arm64; echo PLATFORM_PAIR=linux-arm64 ;;
           esac >>$GITHUB_ENV
-          echo GOFLAGS="'-ldflags=-w -s \"-X=github.com/ollama/ollama/version.Version=${{ env.DOCKER_METADATA_OUTPUT_VERSION }}\" \"-X=github.com/ollama/ollama/server.mode=release\"'" >>$GITHUB_ENV
+          echo GOFLAGS="'-ldflags=-w -s \"-X=github.com/nctu6/unieai/version.Version=${{ env.DOCKER_METADATA_OUTPUT_VERSION }}\" \"-X=github.com/nctu6/unieai/server.mode=release\"'" >>$GITHUB_ENV
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -676,12 +676,12 @@ jobs:
             $(printf '${{ env.FINAL_IMAGE_REPO }}@sha256:%s ' *)
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ${{ env.FINAL_IMAGE_REPO }}:${{ steps.meta.outputs.version }}          
+          docker buildx imagetools inspect ${{ env.FINAL_IMAGE_REPO }}:${{ steps.meta.outputs.version }}
   build-container-image-rocm:
     environment: release
     runs-on: linux
     env:
-      FINAL_IMAGE_REPO: ollama/ollama
+      FINAL_IMAGE_REPO: unieai/unieai
       ARCH: amd64
       PLATFORM_PAIR: linux-amd64
     steps:
@@ -701,7 +701,7 @@ jobs:
       - name: Set Version
         shell: bash
         run: |
-          echo GOFLAGS="'-ldflags=-w -s \"-X=github.com/ollama/ollama/version.Version=${{ env.DOCKER_METADATA_OUTPUT_VERSION }}\" \"-X=github.com/ollama/ollama/server.mode=release\"'" >>$GITHUB_ENV
+          echo GOFLAGS="'-ldflags=-w -s \"-X=github.com/nctu6/unieai/version.Version=${{ env.DOCKER_METADATA_OUTPUT_VERSION }}\" \"-X=github.com/nctu6/unieai/server.mode=release\"'" >>$GITHUB_ENV
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to Docker Hub

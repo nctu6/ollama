@@ -7,7 +7,7 @@ This example demonstrates how one would create a set of 'mentors' you can have a
 1. Add llama3 to have the mentors ask your questions:
 
    ```bash
-   ollama pull llama3
+   unieai pull llama3
    ```
 
 2. Install prerequisites:
@@ -27,7 +27,7 @@ You can also add your own character to be chosen at random when you ask a questi
 1. Make sure you have the right model installed:
 
    ```bash
-   ollama pull stablebeluga2:70b-q4_K_M
+   unieai pull stablebeluga2:70b-q4_K_M
    ```
 
 2. Create a new character:
@@ -41,10 +41,10 @@ You can also add your own character to be chosen at random when you ask a questi
 3. Now you can create a model with this command:
 
    ```bash
-   ollama create <username>/lornegreene -f lornegreene/Modelfile
+   unieai create <username>/lornegreene -f lornegreene/Modelfile
    ```
 
-   `username` is whatever name you set up when you signed up at [https://ollama.com/signup](https://ollama.com/signup).
+   `username` is whatever name you set up when you signed up at [https://unieai.com/signup](https://unieai.com/signup).
 
 4. To add this to your mentors, you will have to update the code as follows. On line 8 of `mentors.ts`, add an object to the array, replacing `<username>` with the username you used above.
 

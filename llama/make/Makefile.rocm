@@ -40,9 +40,9 @@ GPU_COMPILER_CXXFLAGS_LINUX = $(CXXFLAGS) -fPIC -D_GNU_SOURCE
 
 GPU_LIBS = $(wildcard $(addsuffix .$(SHARED_EXT),$(addprefix $(GPU_LIB_DIR)/$(SHARED_PREFIX),$(GPU_RUNNER_LIBS_SHORT))))
 ifeq ($(OS),windows)
-	ROCM_DIST_DEPS_DIR = $(abspath $(SRC_DIR)/../dist/$(OS)-$(ARCH))/lib/ollama
+	ROCM_DIST_DEPS_DIR = $(abspath $(SRC_DIR)/../dist/$(OS)-$(ARCH))/lib/unieai
 else ifeq ($(OS),linux)
-	ROCM_DIST_DEPS_DIR = $(abspath $(SRC_DIR)/../dist/$(OS)-$(ARCH)-rocm)/lib/ollama
+	ROCM_DIST_DEPS_DIR = $(abspath $(SRC_DIR)/../dist/$(OS)-$(ARCH)-rocm)/lib/unieai
 endif
 GPU_DIST_DEPS_LIBS= $(sort $(addprefix $(ROCM_DIST_DEPS_DIR)/,$(notdir $(GPU_LIBS)) $(notdir $(GPU_TRANSITIVE_LIBS))))
 ROCBLAS_DIST_DEP_MANIFEST = $(ROCM_DIST_DEPS_DIR)/rocblas/library/TensileManifest.txt
@@ -90,7 +90,7 @@ GPU_COMPILER_CUFLAGS = \
 include make/gpu.make
 
 # Adjust the rules from gpu.make to handle the ROCm dependencies properly
-$(RUNNERS_DIST_DIR)/$(GPU_RUNNER_NAME)/ollama_llama_server$(EXE_EXT): $(ROCBLAS_DIST_DEP_MANIFEST)
+$(RUNNERS_DIST_DIR)/$(GPU_RUNNER_NAME)/unieai_llama_server$(EXE_EXT): $(ROCBLAS_DIST_DEP_MANIFEST)
 $(ROCBLAS_DIST_DEP_MANIFEST):
 	@-mkdir -p $(dir $@)
 	@echo "Copying rocblas library..."

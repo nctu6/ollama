@@ -24,13 +24,13 @@ import (
 
 	"golang.org/x/sync/semaphore"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/build"
-	"github.com/ollama/ollama/discover"
-	"github.com/ollama/ollama/envconfig"
-	"github.com/ollama/ollama/format"
-	"github.com/ollama/ollama/llama"
-	"github.com/ollama/ollama/runners"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/build"
+	"github.com/nctu6/unieai/discover"
+	"github.com/nctu6/unieai/envconfig"
+	"github.com/nctu6/unieai/format"
+	"github.com/nctu6/unieai/llama"
+	"github.com/nctu6/unieai/runners"
 )
 
 type LlamaServer interface {
@@ -145,7 +145,7 @@ func NewLlamaServer(gpus discover.GpuInfoList, model string, ggml *GGML, adapter
 	finalErr := errors.New("no suitable llama servers found")
 
 	if len(adapters) > 1 {
-		return nil, errors.New("ollama supports only one lora adapter, but multiple were provided")
+		return nil, errors.New("unieai supports only one lora adapter, but multiple were provided")
 	}
 
 	rDir, err := runners.Refresh(build.EmbedFS)
@@ -167,9 +167,9 @@ func NewLlamaServer(gpus discover.GpuInfoList, model string, ggml *GGML, adapter
 	if demandLib != "" {
 		serverPath := availableServers[demandLib]
 		if serverPath == "" {
-			slog.Info(fmt.Sprintf("Invalid OLLAMA_LLM_LIBRARY %s - not found", demandLib))
+			slog.Info(fmt.Sprintf("Invalid UNIEAI_LLM_LIBRARY %s - not found", demandLib))
 		} else {
-			slog.Info("user override", "OLLAMA_LLM_LIBRARY", demandLib, "path", serverPath)
+			slog.Info("user override", "UNIEAI_LLM_LIBRARY", demandLib, "path", serverPath)
 			servers = []string{demandLib}
 			if strings.HasPrefix(demandLib, "cpu") {
 				// Omit the GPU flag to silence the warning
@@ -316,7 +316,7 @@ func NewLlamaServer(gpus discover.GpuInfoList, model string, ggml *GGML, adapter
 			libraryPaths = append([]string{gpus[0].DependencyPath}, libraryPaths...)
 		}
 
-		server := filepath.Join(dir, "ollama_llama_server")
+		server := filepath.Join(dir, "unieai_llama_server")
 		if runtime.GOOS == "windows" {
 			server += ".exe"
 		}
@@ -408,7 +408,7 @@ func NewLlamaServer(gpus discover.GpuInfoList, model string, ggml *GGML, adapter
 		if err = s.cmd.Start(); err != nil {
 			// Detect permission denied and augment the message about noexec
 			if errors.Is(err, os.ErrPermission) {
-				finalErr = fmt.Errorf("unable to start server %w.  %s may have noexec set.  Set OLLAMA_TMPDIR for server to a writable executable directory", err, dir)
+				finalErr = fmt.Errorf("unable to start server %w.  %s may have noexec set.  Set UNIEAI_TMPDIR for server to a writable executable directory", err, dir)
 				continue
 			}
 			msg := ""
@@ -427,7 +427,7 @@ func NewLlamaServer(gpus discover.GpuInfoList, model string, ggml *GGML, adapter
 			if err != nil && s.status != nil && s.status.LastErrMsg != "" {
 				slog.Debug("llama runner terminated", "error", err)
 				if strings.Contains(s.status.LastErrMsg, "unknown model") {
-					s.status.LastErrMsg = "this model is not supported by your version of Ollama. You may need to upgrade"
+					s.status.LastErrMsg = "this model is not supported by your version of Unieai. You may need to upgrade"
 				}
 				s.done <- errors.New(s.status.LastErrMsg)
 			} else {

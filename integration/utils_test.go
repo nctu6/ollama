@@ -22,8 +22,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/app/lifecycle"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/app/lifecycle"
 	"github.com/stretchr/testify/require"
 )
 
@@ -48,11 +48,11 @@ func FindPort() string {
 
 func GetTestEndpoint() (*api.Client, string) {
 	defaultPort := "11434"
-	ollamaHost := os.Getenv("OLLAMA_HOST")
+	unieaiHost := os.Getenv("UNIEAI_HOST")
 
-	scheme, hostport, ok := strings.Cut(ollamaHost, "://")
+	scheme, hostport, ok := strings.Cut(unieaiHost, "://")
 	if !ok {
-		scheme, hostport = "http", ollamaHost
+		scheme, hostport = "http", unieaiHost
 	}
 
 	// trim trailing slashes
@@ -68,7 +68,7 @@ func GetTestEndpoint() (*api.Client, string) {
 		}
 	}
 
-	if os.Getenv("OLLAMA_TEST_EXISTING") == "" && port == defaultPort {
+	if os.Getenv("UNIEAI_TEST_EXISTING") == "" && port == defaultPort {
 		port = FindPort()
 	}
 
@@ -85,9 +85,9 @@ func GetTestEndpoint() (*api.Client, string) {
 var serverMutex sync.Mutex
 var serverReady bool
 
-func startServer(t *testing.T, ctx context.Context, ollamaHost string) error {
+func startServer(t *testing.T, ctx context.Context, unieaiHost string) error {
 	// Make sure the server has been built
-	CLIName, err := filepath.Abs("../ollama")
+	CLIName, err := filepath.Abs("../unieai")
 	if err != nil {
 		return err
 	}
@@ -105,13 +105,13 @@ func startServer(t *testing.T, ctx context.Context, ollamaHost string) error {
 		return nil
 	}
 
-	if tmp := os.Getenv("OLLAMA_HOST"); tmp != ollamaHost {
-		slog.Info("setting env", "OLLAMA_HOST", ollamaHost)
-		t.Setenv("OLLAMA_HOST", ollamaHost)
+	if tmp := os.Getenv("UNIEAI_HOST"); tmp != unieaiHost {
+		slog.Info("setting env", "UNIEAI_HOST", unieaiHost)
+		t.Setenv("UNIEAI_HOST", unieaiHost)
 	}
 
-	slog.Info("starting server", "url", ollamaHost)
-	done, err := lifecycle.SpawnServer(ctx, "../ollama")
+	slog.Info("starting server", "url", unieaiHost)
+	done, err := lifecycle.SpawnServer(ctx, "../unieai")
 	if err != nil {
 		return fmt.Errorf("failed to start server: %w", err)
 	}
@@ -192,9 +192,9 @@ var serverProcMutex sync.Mutex
 // Starts the server if needed
 func InitServerConnection(ctx context.Context, t *testing.T) (*api.Client, string, func()) {
 	client, testEndpoint := GetTestEndpoint()
-	if os.Getenv("OLLAMA_TEST_EXISTING") == "" {
+	if os.Getenv("UNIEAI_TEST_EXISTING") == "" {
 		serverProcMutex.Lock()
-		fp, err := os.CreateTemp("", "ollama-server-*.log")
+		fp, err := os.CreateTemp("", "unieai-server-*.log")
 		if err != nil {
 			t.Fatalf("failed to generate log file: %s", err)
 		}
@@ -204,7 +204,7 @@ func InitServerConnection(ctx context.Context, t *testing.T) (*api.Client, strin
 	}
 
 	return client, testEndpoint, func() {
-		if os.Getenv("OLLAMA_TEST_EXISTING") == "" {
+		if os.Getenv("UNIEAI_TEST_EXISTING") == "" {
 			defer serverProcMutex.Unlock()
 			if t.Failed() {
 				fp, err := os.Open(lifecycle.ServerLogFile)

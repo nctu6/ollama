@@ -1,13 +1,13 @@
 # LangChain
 
-This example is a basic "hello world" of using LangChain with Ollama.
+This example is a basic "hello world" of using LangChain with Unieai.
 
 ## Running the Example
 
 1. Ensure you have the `llama3.2` model installed:
 
    ```bash
-   ollama pull llama3.2
+   unieai pull llama3.2
    ```
 
 2. Install the Python Requirements.

@@ -12,9 +12,9 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/llm"
-	"github.com/ollama/ollama/template"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/llm"
+	"github.com/nctu6/unieai/template"
 )
 
 func readFile(t *testing.T, base, name string) *bytes.Buffer {
@@ -140,7 +140,7 @@ The temperature in San Francisco, CA is 70°F and in Toronto, Canada is 20°C.`,
 
 func TestParseFromFileFromLayer(t *testing.T) {
 	tempModels := t.TempDir()
-	t.Setenv("OLLAMA_MODELS", tempModels)
+	t.Setenv("UNIEAI_MODELS", tempModels)
 
 	file, err := os.CreateTemp(tempModels, "")
 	if err != nil {
@@ -191,7 +191,7 @@ func TestParseFromFileFromLayer(t *testing.T) {
 
 func TestParseLayerFromCopy(t *testing.T) {
 	tempModels := t.TempDir()
-	t.Setenv("OLLAMA_MODELS", tempModels)
+	t.Setenv("UNIEAI_MODELS", tempModels)
 
 	file2, err := os.CreateTemp(tempModels, "")
 	if err != nil {

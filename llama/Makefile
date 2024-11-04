@@ -18,7 +18,7 @@ else ifeq ($(OS),linux)
 	CUDA_12:=$(shell ls -d $(CUDA_PATH)-12 2>/dev/null)
 endif
 
-ifeq ($(OLLAMA_SKIP_CUDA_GENERATE),)
+ifeq ($(UNIEAI_SKIP_CUDA_GENERATE),)
 ifneq ($(CUDA_11),)
 	RUNNER_TARGETS += cuda_v11
 endif
@@ -26,7 +26,7 @@ ifneq ($(CUDA_12),)
 	RUNNER_TARGETS += cuda_v12
 endif
 endif
-ifeq ($(OLLAMA_SKIP_ROCM_GENERATE),)
+ifeq ($(UNIEAI_SKIP_ROCM_GENERATE),)
 ifneq ($(HIP_LIB_DIR),)
 	RUNNER_TARGETS += rocm
 endif

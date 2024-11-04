@@ -12,7 +12,7 @@ import (
 
 func TestGetBlobsPath(t *testing.T) {
 	// GetBlobsPath expects an actual directory to exist
-	dir, err := os.MkdirTemp("", "ollama-test")
+	dir, err := os.MkdirTemp("", "unieai-test")
 	require.NoError(t, err)
 	defer os.RemoveAll(dir)
 
@@ -61,7 +61,7 @@ func TestGetBlobsPath(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			t.Setenv("OLLAMA_MODELS", dir)
+			t.Setenv("UNIEAI_MODELS", dir)
 
 			got, err := GetBlobsPath(tc.digest)
 

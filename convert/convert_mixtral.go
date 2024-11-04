@@ -6,7 +6,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/ollama/ollama/llm"
+	"github.com/nctu6/unieai/llm"
 )
 
 type mixtralModel struct {

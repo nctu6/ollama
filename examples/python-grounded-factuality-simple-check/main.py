@@ -1,8 +1,8 @@
 """Simple example to demonstrate how to use the bespoke-minicheck model."""
 
-import ollama
+import unieai
 
-# NOTE: ollama must be running for this to work, start the ollama app or run `ollama serve`
+# NOTE: unieai must be running for this to work, start the unieai app or run `unieai serve`
 
 
 def check(document, claim):
@@ -21,7 +21,7 @@ def check(document, claim):
       "Document: {document}\nClaim: {claim}"
     """
     prompt = f"Document: {document}\nClaim: {claim}"
-    response = ollama.generate(
+    response = unieai.generate(
         model="bespoke-minicheck", prompt=prompt, options={"num_predict": 2, "temperature": 0.0}
     )
     return response["response"].strip()

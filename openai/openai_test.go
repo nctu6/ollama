@@ -14,7 +14,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/ollama/ollama/api"
+	"github.com/nctu6/unieai/api"
 )
 
 const (

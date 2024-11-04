@@ -4,7 +4,7 @@
 
 include make/common-defs.make
 
-CPU_GOFLAGS="-ldflags=-w -s \"-X=github.com/ollama/ollama/version.Version=$(VERSION)\" \"-X=github.com/ollama/ollama/llama.CpuFeatures=$(subst $(space),$(comma),$(TARGET_CPU_FLAGS))\" $(TARGET_LDFLAGS)"
+CPU_GOFLAGS="-ldflags=-w -s \"-X=github.com/nctu6/unieai/version.Version=$(VERSION)\" \"-X=github.com/nctu6/unieai/llama.CpuFeatures=$(subst $(space),$(comma),$(TARGET_CPU_FLAGS))\" $(TARGET_LDFLAGS)"
 DEFAULT_RUNNER := $(if $(and $(filter darwin,$(OS)),$(filter arm64,$(ARCH))),metal,cpu)
 RUNNERS := $(DEFAULT_RUNNER)
 ifeq ($(ARCH),amd64)
@@ -13,26 +13,26 @@ ifeq ($(CUSTOM_CPU_FLAGS),)
 endif
 endif
 
-DIST_RUNNERS = $(addprefix $(RUNNERS_DIST_DIR)/,$(addsuffix /ollama_llama_server$(EXE_EXT),$(RUNNERS)))
+DIST_RUNNERS = $(addprefix $(RUNNERS_DIST_DIR)/,$(addsuffix /unieai_llama_server$(EXE_EXT),$(RUNNERS)))
 ifneq ($(OS),windows)
-PAYLOAD_RUNNERS = $(addprefix $(RUNNERS_PAYLOAD_DIR)/,$(addsuffix /ollama_llama_server$(EXE_EXT).gz,$(RUNNERS)))
+PAYLOAD_RUNNERS = $(addprefix $(RUNNERS_PAYLOAD_DIR)/,$(addsuffix /unieai_llama_server$(EXE_EXT).gz,$(RUNNERS)))
 endif
-BUILD_RUNNERS = $(addprefix $(RUNNERS_BUILD_DIR)/,$(addsuffix /ollama_llama_server$(EXE_EXT),$(RUNNERS)))
+BUILD_RUNNERS = $(addprefix $(RUNNERS_BUILD_DIR)/,$(addsuffix /unieai_llama_server$(EXE_EXT),$(RUNNERS)))
 
 all: $(BUILD_RUNNERS) $(DIST_RUNNERS) $(PAYLOAD_RUNNERS)
 
-$(RUNNERS_BUILD_DIR)/$(DEFAULT_RUNNER)/ollama_llama_server$(EXE_EXT): TARGET_CPU_FLAGS=$(CUSTOM_CPU_FLAGS)
-$(RUNNERS_BUILD_DIR)/$(DEFAULT_RUNNER)/ollama_llama_server$(EXE_EXT): *.go ./runner/*.go $(COMMON_SRCS) $(COMMON_HDRS)
+$(RUNNERS_BUILD_DIR)/$(DEFAULT_RUNNER)/unieai_llama_server$(EXE_EXT): TARGET_CPU_FLAGS=$(CUSTOM_CPU_FLAGS)
+$(RUNNERS_BUILD_DIR)/$(DEFAULT_RUNNER)/unieai_llama_server$(EXE_EXT): *.go ./runner/*.go $(COMMON_SRCS) $(COMMON_HDRS)
 	@-mkdir -p $(dir $@)
 	GOARCH=$(ARCH) go build -buildmode=pie $(CPU_GOFLAGS) -trimpath $(if $(CUSTOM_CPU_FLAGS),-tags $(subst $(space),$(comma),$(CUSTOM_CPU_FLAGS)))  -o $@ ./runner
 
-$(RUNNERS_BUILD_DIR)/cpu_avx/ollama_llama_server$(EXE_EXT): TARGET_CPU_FLAGS="avx"
-$(RUNNERS_BUILD_DIR)/cpu_avx/ollama_llama_server$(EXE_EXT): *.go ./runner/*.go $(COMMON_SRCS) $(COMMON_HDRS)
+$(RUNNERS_BUILD_DIR)/cpu_avx/unieai_llama_server$(EXE_EXT): TARGET_CPU_FLAGS="avx"
+$(RUNNERS_BUILD_DIR)/cpu_avx/unieai_llama_server$(EXE_EXT): *.go ./runner/*.go $(COMMON_SRCS) $(COMMON_HDRS)
 	@-mkdir -p $(dir $@)
 	GOARCH=$(ARCH) go build -buildmode=pie $(CPU_GOFLAGS) -trimpath -tags $(subst $(space),$(comma),$(TARGET_CPU_FLAGS)) -o $@ ./runner
 
-$(RUNNERS_BUILD_DIR)/cpu_avx2/ollama_llama_server$(EXE_EXT): TARGET_CPU_FLAGS="avx avx2"
-$(RUNNERS_BUILD_DIR)/cpu_avx2/ollama_llama_server$(EXE_EXT): *.go ./runner/*.go $(COMMON_SRCS) $(COMMON_HDRS)
+$(RUNNERS_BUILD_DIR)/cpu_avx2/unieai_llama_server$(EXE_EXT): TARGET_CPU_FLAGS="avx avx2"
+$(RUNNERS_BUILD_DIR)/cpu_avx2/unieai_llama_server$(EXE_EXT): *.go ./runner/*.go $(COMMON_SRCS) $(COMMON_HDRS)
 	@-mkdir -p $(dir $@)
 	GOARCH=$(ARCH) go build -buildmode=pie $(CPU_GOFLAGS) -trimpath -tags $(subst $(space),$(comma),$(TARGET_CPU_FLAGS)) -o $@ ./runner
 
@@ -40,11 +40,11 @@ $(RUNNERS_DIST_DIR)/%: $(RUNNERS_BUILD_DIR)/%
 	@-mkdir -p $(dir $@)
 	cp $< $@
 
-$(RUNNERS_PAYLOAD_DIR)/%/ollama_llama_server$(EXE_EXT).gz: $(RUNNERS_BUILD_DIR)/%/ollama_llama_server$(EXE_EXT)
+$(RUNNERS_PAYLOAD_DIR)/%/unieai_llama_server$(EXE_EXT).gz: $(RUNNERS_BUILD_DIR)/%/unieai_llama_server$(EXE_EXT)
 	@-mkdir -p $(dir $@)
 	${GZIP} --best -c $< > $@
 
-clean: 
+clean:
 	rm -f $(BUILD_RUNNERS) $(DIST_RUNNERS) $(PAYLOAD_RUNNERS)
 
 .PHONY: clean all

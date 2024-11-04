@@ -34,16 +34,16 @@ import (
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/term"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/auth"
-	"github.com/ollama/ollama/envconfig"
-	"github.com/ollama/ollama/format"
-	"github.com/ollama/ollama/parser"
-	"github.com/ollama/ollama/progress"
-	"github.com/ollama/ollama/server"
-	"github.com/ollama/ollama/types/errtypes"
-	"github.com/ollama/ollama/types/model"
-	"github.com/ollama/ollama/version"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/auth"
+	"github.com/nctu6/unieai/envconfig"
+	"github.com/nctu6/unieai/format"
+	"github.com/nctu6/unieai/parser"
+	"github.com/nctu6/unieai/progress"
+	"github.com/nctu6/unieai/server"
+	"github.com/nctu6/unieai/types/errtypes"
+	"github.com/nctu6/unieai/types/model"
+	"github.com/nctu6/unieai/version"
 )
 
 var (
@@ -194,7 +194,7 @@ func CreateHandler(cmd *cobra.Command, args []string) error {
 }
 
 func tempZipFiles(path string) (string, error) {
-	tempfile, err := os.CreateTemp("", "ollama-tf")
+	tempfile, err := os.CreateTemp("", "unieai-tf")
 	if err != nil {
 		return "", err
 	}
@@ -527,8 +527,8 @@ func errFromUnknownKey(unknownKeyErr error) error {
 		}
 
 		if runtime.GOOS == "linux" && serverPubKey != localPubKey {
-			// try the ollama service public key
-			svcPubKey, err := os.ReadFile("/usr/share/ollama/.ollama/id_ed25519.pub")
+			// try the unieai service public key
+			svcPubKey, err := os.ReadFile("/usr/share/unieai/.unieai/id_ed25519.pub")
 			if err != nil {
 				return unknownKeyErr
 			}
@@ -542,10 +542,10 @@ func errFromUnknownKey(unknownKeyErr error) error {
 
 		var msg strings.Builder
 		msg.WriteString(unknownKeyErr.Error())
-		msg.WriteString("\n\nYour ollama key is:\n")
+		msg.WriteString("\n\nYour unieai key is:\n")
 		msg.WriteString(localPubKey)
 		msg.WriteString("\nAdd your key at:\n")
-		msg.WriteString("https://ollama.com/settings/keys")
+		msg.WriteString("https://unieai.com/settings/keys")
 
 		return errors.New(msg.String())
 	}
@@ -607,9 +607,9 @@ func PushHandler(cmd *cobra.Command, args []string) error {
 			return errors.New("you are not authorized to push to this namespace, create the model under a namespace you own")
 		}
 		host := model.ParseName(args[0]).Host
-		isOllamaHost := strings.HasSuffix(host, ".ollama.ai") || strings.HasSuffix(host, ".ollama.com")
-		if strings.Contains(err.Error(), errtypes.UnknownOllamaKeyErrMsg) && isOllamaHost {
-			// the user has not added their ollama key to ollama.com
+		isUnieaiHost := strings.HasSuffix(host, ".unieai.ai") || strings.HasSuffix(host, ".unieai.com")
+		if strings.Contains(err.Error(), errtypes.UnknownUnieaiKeyErrMsg) && isUnieaiHost {
+			// the user has not added their unieai key to unieai.com
 			// re-throw an error with a more user-friendly message
 			return errFromUnknownKey(err)
 		}
@@ -1223,8 +1223,8 @@ func initializeKeypair() error {
 		return err
 	}
 
-	privKeyPath := filepath.Join(home, ".ollama", "id_ed25519")
-	pubKeyPath := filepath.Join(home, ".ollama", "id_ed25519.pub")
+	privKeyPath := filepath.Join(home, ".unieai", "id_ed25519")
+	pubKeyPath := filepath.Join(home, ".unieai", "id_ed25519.pub")
 
 	_, err = os.Stat(privKeyPath)
 	if os.IsNotExist(err) {
@@ -1273,7 +1273,7 @@ func checkServerHeartbeat(cmd *cobra.Command, _ []string) error {
 			return err
 		}
 		if err := startApp(cmd.Context(), client); err != nil {
-			return errors.New("could not connect to ollama app, is it running?")
+			return errors.New("could not connect to unieai app, is it running?")
 		}
 	}
 	return nil
@@ -1287,11 +1287,11 @@ func versionHandler(cmd *cobra.Command, _ []string) {
 
 	serverVersion, err := client.Version(cmd.Context())
 	if err != nil {
-		fmt.Println("Warning: could not connect to a running Ollama instance")
+		fmt.Println("Warning: could not connect to a running Unieai instance")
 	}
 
 	if serverVersion != "" {
-		fmt.Printf("ollama version is %s\n", serverVersion)
+		fmt.Printf("unieai version is %s\n", serverVersion)
 	}
 
 	if serverVersion != version.Version {
@@ -1323,7 +1323,7 @@ func NewCLI() *cobra.Command {
 	}
 
 	rootCmd := &cobra.Command{
-		Use:           "ollama",
+		Use:           "unieai",
 		Short:         "Large language model runner",
 		SilenceUsage:  true,
 		SilenceErrors: true,
@@ -1392,7 +1392,7 @@ func NewCLI() *cobra.Command {
 	serveCmd := &cobra.Command{
 		Use:     "serve",
 		Aliases: []string{"start"},
-		Short:   "Start ollama",
+		Short:   "Start unieai",
 		Args:    cobra.ExactArgs(0),
 		RunE:    RunServer,
 	}
@@ -1450,7 +1450,7 @@ func NewCLI() *cobra.Command {
 
 	envVars := envconfig.AsMap()
 
-	envs := []envconfig.EnvVar{envVars["OLLAMA_HOST"]}
+	envs := []envconfig.EnvVar{envVars["UNIEAI_HOST"]}
 
 	for _, cmd := range []*cobra.Command{
 		createCmd,
@@ -1467,24 +1467,24 @@ func NewCLI() *cobra.Command {
 	} {
 		switch cmd {
 		case runCmd:
-			appendEnvDocs(cmd, []envconfig.EnvVar{envVars["OLLAMA_HOST"], envVars["OLLAMA_NOHISTORY"]})
+			appendEnvDocs(cmd, []envconfig.EnvVar{envVars["UNIEAI_HOST"], envVars["UNIEAI_NOHISTORY"]})
 		case serveCmd:
 			appendEnvDocs(cmd, []envconfig.EnvVar{
-				envVars["OLLAMA_DEBUG"],
-				envVars["OLLAMA_HOST"],
-				envVars["OLLAMA_KEEP_ALIVE"],
-				envVars["OLLAMA_MAX_LOADED_MODELS"],
-				envVars["OLLAMA_MAX_QUEUE"],
-				envVars["OLLAMA_MODELS"],
-				envVars["OLLAMA_NUM_PARALLEL"],
-				envVars["OLLAMA_NOPRUNE"],
-				envVars["OLLAMA_ORIGINS"],
-				envVars["OLLAMA_SCHED_SPREAD"],
-				envVars["OLLAMA_TMPDIR"],
-				envVars["OLLAMA_FLASH_ATTENTION"],
-				envVars["OLLAMA_LLM_LIBRARY"],
-				envVars["OLLAMA_GPU_OVERHEAD"],
-				envVars["OLLAMA_LOAD_TIMEOUT"],
+				envVars["UNIEAI_DEBUG"],
+				envVars["UNIEAI_HOST"],
+				envVars["UNIEAI_KEEP_ALIVE"],
+				envVars["UNIEAI_MAX_LOADED_MODELS"],
+				envVars["UNIEAI_MAX_QUEUE"],
+				envVars["UNIEAI_MODELS"],
+				envVars["UNIEAI_NUM_PARALLEL"],
+				envVars["UNIEAI_NOPRUNE"],
+				envVars["UNIEAI_ORIGINS"],
+				envVars["UNIEAI_SCHED_SPREAD"],
+				envVars["UNIEAI_TMPDIR"],
+				envVars["UNIEAI_FLASH_ATTENTION"],
+				envVars["UNIEAI_LLM_LIBRARY"],
+				envVars["UNIEAI_GPU_OVERHEAD"],
+				envVars["UNIEAI_LOAD_TIMEOUT"],
 			})
 		default:
 			appendEnvDocs(cmd, envs)

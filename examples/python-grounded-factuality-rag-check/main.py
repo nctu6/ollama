@@ -1,4 +1,4 @@
-import ollama
+import unieai
 import warnings
 from mattsollamatools import chunker
 from newspaper import Article
@@ -62,7 +62,7 @@ def check(document, claim):
       "Document: {document}\nClaim: {claim}"
     """
     prompt = f"Document: {document}\nClaim: {claim}"
-    response = ollama.generate(
+    response = unieai.generate(
         model="bespoke-minicheck", prompt=prompt, options={"num_predict": 2, "temperature": 0.0}
     )
     return response["response"].strip()
@@ -81,8 +81,8 @@ if __name__ == "__main__":
     text = getArticleText(article_url)
     chunks = chunker(text)
 
-    # Embed (batch) chunks using ollama
-    embeddings = ollama.embed(model="all-minilm", input=chunks)["embeddings"]
+    # Embed (batch) chunks using unieai
+    embeddings = unieai.embed(model="all-minilm", input=chunks)["embeddings"]
 
     for chunk, embedding in zip(chunks, embeddings):
         item = {}
@@ -103,8 +103,8 @@ if __name__ == "__main__":
         if question.lower() == "quit":
             break
 
-        # Embed the user's question using ollama.embed
-        question_embedding = ollama.embed(model="all-minilm", input=question)[
+        # Embed the user's question using unieai.embed
+        question_embedding = unieai.embed(model="all-minilm", input=question)[
             "embeddings"
         ]
 
@@ -118,14 +118,14 @@ if __name__ == "__main__":
         # Give the retreived chunks and question to the chat model
         system_prompt = f"Only use the following information to answer the question. Do not use anything else: {sourcetext}"
 
-        ollama_response = ollama.generate(
+        unieai_response = unieai.generate(
             model="llama3.2",
             prompt=question,
             system=system_prompt,
             options={"stream": False},
         )
 
-        answer = ollama_response["response"]
+        answer = unieai_response["response"]
         print(f"LLM Answer:\n{answer}\n")
 
         # Check each sentence in the response for grounded factuality

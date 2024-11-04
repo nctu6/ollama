@@ -53,8 +53,8 @@ body:
   - type: input
     id: version
     attributes:
-      label: Ollama version
-      description: What version of Ollama are you using? (`ollama --version`)
+      label: Unieai version
+      description: What version of Unieai are you using? (`unieai --version`)
       placeholder: e.g., 0.1.32
     validations:
       required: false

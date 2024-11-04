@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ollama/ollama/llm"
+	"github.com/nctu6/unieai/llm"
 )
 
 type phi3Model struct {

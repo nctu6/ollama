@@ -1,4 +1,4 @@
-# Using LangChain with Ollama in Python
+# Using LangChain with Unieai in Python
 
 Let's imagine we are studying the classics, such as **the Odyssey** by **Homer**. We might have a question about Neleus and his family. If you ask llama2 for that info, you may get something like:
 
@@ -8,24 +8,24 @@ This sounds like a typical censored response, but even llama2-uncensored gives a
 
 > Neleus was a legendary king of Pylos and the father of Nestor, one of the Argonauts. His mother was Clymene, a sea nymph, while his father was Neptune, the god of the sea.
 
-So let's figure out how we can use **LangChain** with Ollama to ask our question to the actual document, the Odyssey by Homer, using Python.
+So let's figure out how we can use **LangChain** with Unieai to ask our question to the actual document, the Odyssey by Homer, using Python.
 
-Let's start by asking a simple question that we can get an answer to from the **Llama2** model using **Ollama**. First, we need to install the **LangChain** package:
+Let's start by asking a simple question that we can get an answer to from the **Llama2** model using **Unieai**. First, we need to install the **LangChain** package:
 
 `pip install langchain_community`
 
 Then we can create a model and ask the question:
 
 ```python
-from langchain_community.llms import Ollama
-ollama = Ollama(
+from langchain_community.llms import Unieai
+unieai = Unieai(
     base_url='http://localhost:11434',
     model="llama3"
 )
-print(ollama.invoke("why is the sky blue"))
+print(unieai.invoke("why is the sky blue"))
 ```
 
-Notice that we are defining the model and the base URL for Ollama.
+Notice that we are defining the model and the base URL for Unieai.
 
 Now let's load a document to ask questions against. I'll load up the Odyssey by Homer, which you can find at Project Gutenberg. We will need **WebBaseLoader** which is part of **LangChain** and loads text from any webpage. On my machine, I also needed to install **bs4** to get that to work, so run `pip install bs4`.
 
@@ -44,12 +44,12 @@ text_splitter=RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
 all_splits = text_splitter.split_documents(data)
 ```
 
-It's split up, but we have to find the relevant splits and then submit those to the model. We can do this by creating embeddings and storing them in a vector database. We can use Ollama directly to instantiate an embedding model. We will use ChromaDB in this example for a vector database. `pip install chromadb`
-We also need to pull embedding model: `ollama pull nomic-embed-text`
+It's split up, but we have to find the relevant splits and then submit those to the model. We can do this by creating embeddings and storing them in a vector database. We can use Unieai directly to instantiate an embedding model. We will use ChromaDB in this example for a vector database. `pip install chromadb`
+We also need to pull embedding model: `unieai pull nomic-embed-text`
 ```python
-from langchain.embeddings import OllamaEmbeddings
+from langchain.embeddings import UnieaiEmbeddings
 from langchain.vectorstores import Chroma
-oembed = OllamaEmbeddings(base_url="http://localhost:11434", model="nomic-embed-text")
+oembed = UnieaiEmbeddings(base_url="http://localhost:11434", model="nomic-embed-text")
 vectorstore = Chroma.from_documents(documents=all_splits, embedding=oembed)
 ```
 
@@ -67,7 +67,7 @@ The next thing is to send the question and the relevant parts of the docs to the
 
 ```python
 from langchain.chains import RetrievalQA
-qachain=RetrievalQA.from_chain_type(ollama, retriever=vectorstore.as_retriever())
+qachain=RetrievalQA.from_chain_type(unieai, retriever=vectorstore.as_retriever())
 res = qachain.invoke({"query": question})
 print(res['result'])
 ```

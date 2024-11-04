@@ -19,7 +19,7 @@ else ifeq ($(OS),linux)
 	GPU_COMPILER_CXXFLAGS = $(GPU_COMPILER_CXXFLAGS_LINUX)
 endif
 
-GPU_GOFLAGS="-ldflags=-w -s \"-X=github.com/ollama/ollama/version.Version=$(VERSION)\" \"-X=github.com/ollama/ollama/llama.CpuFeatures=$(subst $(space),$(comma),$(GPU_RUNNER_CPU_FLAGS))\" $(TARGET_LDFLAGS)"
+GPU_GOFLAGS="-ldflags=-w -s \"-X=github.com/nctu6/unieai/version.Version=$(VERSION)\" \"-X=github.com/nctu6/unieai/llama.CpuFeatures=$(subst $(space),$(comma),$(GPU_RUNNER_CPU_FLAGS))\" $(TARGET_LDFLAGS)"
 
 # TODO Unify how we handle dependencies in the dist/packaging and install flow
 # today, cuda is bundled, but rocm is split out.  Should split them each out by runner
@@ -44,7 +44,7 @@ GPU_RUNNER_HDRS := \
 
 
 # Conditional flags and components to speed up developer builds
-ifneq ($(OLLAMA_FAST_BUILD),)
+ifneq ($(UNIEAI_FAST_BUILD),)
 	GPU_COMPILER_CUFLAGS += 	\
 		-DGGML_DISABLE_FLASH_ATTN
 else
@@ -60,11 +60,11 @@ GPU_RUNNER_OBJS := $(GPU_RUNNER_SRCS:.cu=.$(GPU_RUNNER_NAME).$(OBJ_EXT))
 GPU_RUNNER_OBJS := $(GPU_RUNNER_OBJS:.c=.$(GPU_RUNNER_NAME).$(OBJ_EXT))
 GPU_RUNNER_OBJS := $(addprefix $(BUILD_DIR)/,$(GPU_RUNNER_OBJS:.cpp=.$(GPU_RUNNER_NAME).$(OBJ_EXT)))
 
-DIST_RUNNERS = $(addprefix $(RUNNERS_DIST_DIR)/,$(addsuffix /ollama_llama_server$(EXE_EXT),$(GPU_RUNNER_NAME)))
+DIST_RUNNERS = $(addprefix $(RUNNERS_DIST_DIR)/,$(addsuffix /unieai_llama_server$(EXE_EXT),$(GPU_RUNNER_NAME)))
 ifneq ($(OS),windows)
-PAYLOAD_RUNNERS = $(addprefix $(RUNNERS_PAYLOAD_DIR)/,$(addsuffix /ollama_llama_server$(EXE_EXT).gz,$(GPU_RUNNER_NAME)))
+PAYLOAD_RUNNERS = $(addprefix $(RUNNERS_PAYLOAD_DIR)/,$(addsuffix /unieai_llama_server$(EXE_EXT).gz,$(GPU_RUNNER_NAME)))
 endif
-BUILD_RUNNERS = $(addprefix $(RUNNERS_BUILD_DIR)/,$(addsuffix /ollama_llama_server$(EXE_EXT),$(GPU_RUNNER_NAME)))
+BUILD_RUNNERS = $(addprefix $(RUNNERS_BUILD_DIR)/,$(addsuffix /unieai_llama_server$(EXE_EXT),$(GPU_RUNNER_NAME)))
 
 
 $(GPU_RUNNER_NAME): $(BUILD_RUNNERS) $(DIST_RUNNERS) $(PAYLOAD_RUNNERS)
@@ -79,8 +79,8 @@ $(BUILD_DIR)/%.$(GPU_RUNNER_NAME).$(OBJ_EXT): %.c
 $(BUILD_DIR)/%.$(GPU_RUNNER_NAME).$(OBJ_EXT): %.cpp
 	@-mkdir -p $(dir $@)
 	$(CCACHE) $(GPU_COMPILER) -c $(GPU_COMPILER_CXXFLAGS) -o $@ $<
-$(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/ollama_llama_server$(EXE_EXT): TARGET_CGO_LDFLAGS = -L"$(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/" $(CGO_EXTRA_LDFLAGS)
-$(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/ollama_llama_server$(EXE_EXT): $(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/$(SHARED_PREFIX)ggml_$(GPU_RUNNER_NAME).$(SHARED_EXT) *.go ./runner/*.go $(COMMON_SRCS) $(COMMON_HDRS)
+$(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/unieai_llama_server$(EXE_EXT): TARGET_CGO_LDFLAGS = -L"$(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/" $(CGO_EXTRA_LDFLAGS)
+$(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/unieai_llama_server$(EXE_EXT): $(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/$(SHARED_PREFIX)ggml_$(GPU_RUNNER_NAME).$(SHARED_EXT) *.go ./runner/*.go $(COMMON_SRCS) $(COMMON_HDRS)
 	@-mkdir -p $(dir $@)
 	GOARCH=$(ARCH) CGO_LDFLAGS="$(TARGET_CGO_LDFLAGS)" go build -buildmode=pie  $(GPU_GOFLAGS) -trimpath -tags $(subst $(space),$(comma),$(GPU_RUNNER_CPU_FLAGS) $(GPU_RUNNER_GO_TAGS)) -o $@ ./runner
 $(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/$(SHARED_PREFIX)ggml_$(GPU_RUNNER_NAME).$(SHARED_EXT): $(GPU_RUNNER_OBJS) $(DIST_GPU_RUNNER_LIB_DEPS) $(COMMON_HDRS) $(GPU_RUNNER_HDRS)
@@ -91,26 +91,26 @@ $(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/$(SHARED_PREFIX)ggml_$(GPU_RUNNER_NAME).
 $(RUNNERS_DIST_DIR)/%: $(RUNNERS_BUILD_DIR)/%
 	@-mkdir -p $(dir $@)
 	$(CP) $< $@
-$(RUNNERS_DIST_DIR)/$(GPU_RUNNER_NAME)/ollama_llama_server$(EXE_EXT): $(DIST_LIB_DIR)/$(SHARED_PREFIX)ggml_$(GPU_RUNNER_NAME).$(SHARED_EXT) $(GPU_DIST_DEPS_LIBS)
+$(RUNNERS_DIST_DIR)/$(GPU_RUNNER_NAME)/unieai_llama_server$(EXE_EXT): $(DIST_LIB_DIR)/$(SHARED_PREFIX)ggml_$(GPU_RUNNER_NAME).$(SHARED_EXT) $(GPU_DIST_DEPS_LIBS)
 $(DIST_LIB_DIR)/$(SHARED_PREFIX)ggml_$(GPU_RUNNER_NAME).$(SHARED_EXT): $(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/$(SHARED_PREFIX)ggml_$(GPU_RUNNER_NAME).$(SHARED_EXT)
 	@-mkdir -p $(dir $@)
 	$(CP) $< $@
-$(DIST_GPU_RUNNER_LIB_DEPS): 
+$(DIST_GPU_RUNNER_LIB_DEPS):
 	@-mkdir -p $(dir $@)
 	$(CP) $(GPU_LIB_DIR)/$(notdir $@) $(dir $@)
-$(GPU_DIST_DEPS_LIBS): 
+$(GPU_DIST_DEPS_LIBS):
 	@-mkdir -p $(dir $@)
 	$(CP) $(dir $(filter %$(notdir $@),$(GPU_LIBS) $(GPU_TRANSITIVE_LIBS)))/$(notdir $@) $(dir $@)
 
 # Payload targets
-$(RUNNERS_PAYLOAD_DIR)/%/ollama_llama_server.gz: $(RUNNERS_BUILD_DIR)/%/ollama_llama_server 
+$(RUNNERS_PAYLOAD_DIR)/%/unieai_llama_server.gz: $(RUNNERS_BUILD_DIR)/%/unieai_llama_server
 	@-mkdir -p $(dir $@)
 	${GZIP} --best -c $< > $@
 $(RUNNERS_PAYLOAD_DIR)/$(GPU_RUNNER_NAME)/%.gz: $(RUNNERS_BUILD_DIR)/$(GPU_RUNNER_NAME)/%
 	@-mkdir -p $(dir $@)
 	${GZIP} --best -c $< > $@
 
-clean: 
+clean:
 	rm -f $(GPU_RUNNER_OBJS) $(BUILD_RUNNERS) $(DIST_RUNNERS) $(PAYLOAD_RUNNERS)
 
 .PHONY: clean $(GPU_RUNNER_NAME)

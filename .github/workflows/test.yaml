@@ -66,7 +66,7 @@ jobs:
           cache: true
       - run: go get ./...
       - run: |
-          git config --global --add safe.directory /__w/ollama/ollama
+          git config --global --add safe.directory /__w/unieai/unieai
           cores=$(grep '^core id' /proc/cpuinfo |sort -u|wc -l)
           make -j $cores cuda_v11
   runners-linux-rocm:
@@ -90,7 +90,7 @@ jobs:
           cache: true
       - run: go get ./...
       - run: |
-          git config --global --add safe.directory /__w/ollama/ollama
+          git config --global --add safe.directory /__w/unieai/unieai
           cores=$(grep '^core id' /proc/cpuinfo |sort -u|wc -l)
           make -j $cores rocm
 
@@ -180,7 +180,7 @@ jobs:
         run: |
           & (resolve-path "c:\Program Files\NVIDIA*\CUDA\v*\bin\nvcc.exe")[0] --version
           $cudaPath=((resolve-path "c:\Program Files\NVIDIA*\CUDA\v*\bin\nvcc.exe")[0].path | split-path | split-path)
-          $cudaVer=($cudaPath | split-path -leaf ) -replace 'v(\d+).(\d+)', '$1_$2' 
+          $cudaVer=($cudaPath | split-path -leaf ) -replace 'v(\d+).(\d+)', '$1_$2'
           echo "$cudaPath\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           echo "CUDA_PATH=$cudaPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           echo "CUDA_PATH_V${cudaVer}=$cudaPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -243,7 +243,7 @@ jobs:
           $env:PATH="$gopath;$gccpath;$env:PATH"
           echo $env:PATH
           if (!(gcc --version | select-string -quiet clang)) { throw "wrong gcc compiler detected - must be clang" }
-          make -j 4      
+          make -j 4
       - name: 'Build Unix Go Runners'
         if: ${{ ! startsWith(matrix.os, 'windows-') }}
         run: make -j 4

@@ -14,7 +14,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/spf13/cobra"
 
-	"github.com/ollama/ollama/api"
+	"github.com/nctu6/unieai/api"
 )
 
 func TestShowInfo(t *testing.T) {
@@ -31,9 +31,9 @@ func TestShowInfo(t *testing.T) {
 		}
 
 		expect := `  Model
-    architecture    test    
-    parameters      7B      
-    quantization    FP16    
+    architecture    test
+    parameters      7B
+    quantization    FP16
 
 `
 
@@ -61,11 +61,11 @@ func TestShowInfo(t *testing.T) {
 		}
 
 		expect := `  Model
-    architecture        test    
-    parameters          7B      
-    context length      0       
-    embedding length    0       
-    quantization        FP16    
+    architecture        test
+    parameters          7B
+    context length      0
+    embedding length    0
+    quantization        FP16
 
 `
 		if diff := cmp.Diff(expect, b.String()); diff != "" {
@@ -93,17 +93,17 @@ func TestShowInfo(t *testing.T) {
 		}
 
 		expect := `  Model
-    architecture    test    
-    parameters      7B      
-    quantization    FP16    
+    architecture    test
+    parameters      7B
+    quantization    FP16
 
   Parameters
-    stop           never    
-    stop           gonna    
-    stop           give     
-    stop           you      
-    stop           up       
-    temperature    99       
+    stop           never
+    stop           gonna
+    stop           give
+    stop           you
+    stop           up
+    temperature    99
 
 `
 		if diff := cmp.Diff(expect, b.String()); diff != "" {
@@ -130,15 +130,15 @@ func TestShowInfo(t *testing.T) {
 		}
 
 		expect := `  Model
-    architecture    test    
-    parameters      7B      
-    quantization    FP16    
+    architecture    test
+    parameters      7B
+    quantization    FP16
 
   Projector
-    architecture        clip       
-    parameters          133.70M    
-    embedding length    0          
-    dimensions          0          
+    architecture        clip
+    parameters          133.70M
+    embedding length    0
+    dimensions          0
 
 `
 		if diff := cmp.Diff(expect, b.String()); diff != "" {
@@ -163,13 +163,13 @@ Weigh anchor!
 		}
 
 		expect := `  Model
-    architecture    test    
-    parameters      7B      
-    quantization    FP16    
+    architecture    test
+    parameters      7B
+    quantization    FP16
 
   System
-    You are a pirate!    
-    Ahoy, matey!         
+    You are a pirate!
+    Ahoy, matey!
 
 `
 		if diff := cmp.Diff(expect, b.String()); diff != "" {
@@ -196,13 +196,13 @@ Weigh anchor!
 		}
 
 		expect := `  Model
-    architecture    test    
-    parameters      7B      
-    quantization    FP16    
+    architecture    test
+    parameters      7B
+    quantization    FP16
 
   License
-    MIT License             
-    Copyright (c) Ollama    
+    MIT License
+    Copyright (c) Unieai
 
 `
 		if diff := cmp.Diff(expect, b.String()); diff != "" {
@@ -253,7 +253,7 @@ func TestDeleteHandler(t *testing.T) {
 		}
 	}))
 
-	t.Setenv("OLLAMA_HOST", mockServer.URL)
+	t.Setenv("UNIEAI_HOST", mockServer.URL)
 	t.Cleanup(mockServer.Close)
 
 	cmd := &cobra.Command{}

@@ -1,6 +1,6 @@
-# Using LangChain with Ollama using JavaScript
+# Using LangChain with Unieai using JavaScript
 
-In this tutorial, we are going to use JavaScript with LangChain and Ollama to learn about something just a touch more recent. In August 2023, there was a series of wildfires on Maui. There is no way an LLM trained before that time can know about this, since their training data would not include anything as recent as that. So we can find the [Wikipedia article about the fires](https://en.wikipedia.org/wiki/2023_Hawaii_wildfires) and ask questions about the contents.
+In this tutorial, we are going to use JavaScript with LangChain and Unieai to learn about something just a touch more recent. In August 2023, there was a series of wildfires on Maui. There is no way an LLM trained before that time can know about this, since their training data would not include anything as recent as that. So we can find the [Wikipedia article about the fires](https://en.wikipedia.org/wiki/2023_Hawaii_wildfires) and ask questions about the contents.
 
 To get started, let's just use **LangChain** to ask a simple question to a model. To do this with JavaScript, we need to install **LangChain**:
 
@@ -11,19 +11,19 @@ npm install @langchain/community
 Now we can start building out our JavaScript:
 
 ```javascript
-import { Ollama } from "@langchain/community/llms/ollama";
+import { Unieai } from "@langchain/community/llms/unieai";
 
-const ollama = new Ollama({
+const unieai = new Unieai({
   baseUrl: "http://localhost:11434",
   model: "llama3.2",
 });
 
-const answer = await ollama.invoke(`why is the sky blue?`);
+const answer = await unieai.invoke(`why is the sky blue?`);
 
 console.log(answer);
 ```
 
-That will get us the same thing as if we ran `ollama run llama3.2 "why is the sky blue"` in the terminal. But we want to load a document from the web to ask a question against. **Cheerio** is a great library for ingesting a webpage, and **LangChain** uses it in their **CheerioWebBaseLoader**. So let's install **Cheerio** and build that part of the app.
+That will get us the same thing as if we ran `unieai run llama3.2 "why is the sky blue"` in the terminal. But we want to load a document from the web to ask a question against. **Cheerio** is a great library for ingesting a webpage, and **LangChain** uses it in their **CheerioWebBaseLoader**. So let's install **Cheerio** and build that part of the app.
 
 ```bash
 npm install cheerio
@@ -67,11 +67,11 @@ To connect the datastore to a question asked to a LLM, we need to use the concep
 import { RetrievalQAChain } from "langchain/chains";
 
 const retriever = vectorStore.asRetriever();
-const chain = RetrievalQAChain.fromLLM(ollama, retriever);
+const chain = RetrievalQAChain.fromLLM(unieai, retriever);
 const result = await chain.call({query: "When was Hawaii's request for a major disaster declaration approved?"});
 console.log(result.text)
 ```
 
 So we created a retriever, which is a way to return the chunks that match a query from a datastore. And then connect the retriever and the model via a chain. Finally, we send a query to the chain, which results in an answer using our document as a source. The answer it returned was correct, August 10, 2023.
 
-And that is a simple introduction to what you can do with **LangChain** and **Ollama.**
+And that is a simple introduction to what you can do with **LangChain** and **Unieai.**

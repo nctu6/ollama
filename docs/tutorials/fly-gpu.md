@@ -1,6 +1,6 @@
-# Running Ollama on Fly.io GPU Instances
+# Running Unieai on Fly.io GPU Instances
 
-Ollama runs with little to no configuration on [Fly.io GPU instances](https://fly.io/docs/gpus/gpu-quickstart/). If you don't have access to GPUs yet, you'll need to [apply for access](https://fly.io/gpu/) on the waitlist. Once you're accepted, you'll get an email with instructions on how to get started.
+Unieai runs with little to no configuration on [Fly.io GPU instances](https://fly.io/docs/gpus/gpu-quickstart/). If you don't have access to GPUs yet, you'll need to [apply for access](https://fly.io/gpu/) on the waitlist. Once you're accepted, you'll get an email with instructions on how to get started.
 
 Create a new app with `fly apps create`:
 
@@ -16,7 +16,7 @@ primary_region = "ord"
 vm.size = "a100-40gb" # see https://fly.io/docs/gpus/gpu-quickstart/ for more info
 
 [build]
-  image = "ollama/ollama"
+  image = "unieai/unieai"
 
 [http_service]
   internal_port = 11434
@@ -28,7 +28,7 @@ vm.size = "a100-40gb" # see https://fly.io/docs/gpus/gpu-quickstart/ for more in
 
 [mounts]
   source = "models"
-  destination = "/root/.ollama"
+  destination = "/root/.unieai"
   initial_size = "100gb"
 ```
 
@@ -47,11 +47,11 @@ fly deploy
 And finally you can access it interactively with a new Fly.io Machine:
 
 ```
-fly machine run -e OLLAMA_HOST=http://your-app-name.flycast --shell ollama/ollama
+fly machine run -e UNIEAI_HOST=http://your-app-name.flycast --shell unieai/unieai
 ```
 
 ```bash
-$ ollama run openchat:7b-v3.5-fp16
+$ unieai run openchat:7b-v3.5-fp16
 >>> How do I bake chocolate chip cookies?
  To bake chocolate chip cookies, follow these steps:
 
@@ -78,6 +78,6 @@ to cool completely.
 Enjoy your homemade chocolate chip cookies!
 ```
 
-When you set it up like this, it will automatically turn off when you're done using it. Then when you access it again, it will automatically turn back on. This is a great way to save money on GPU instances when you're not using them. If you want a persistent wake-on-use connection to your Ollama instance, you can set up a [connection to your Fly network using WireGuard](https://fly.io/docs/reference/private-networking/#discovering-apps-through-dns-on-a-wireguard-connection). Then you can access your Ollama instance at `http://your-app-name.flycast`.
+When you set it up like this, it will automatically turn off when you're done using it. Then when you access it again, it will automatically turn back on. This is a great way to save money on GPU instances when you're not using them. If you want a persistent wake-on-use connection to your Unieai instance, you can set up a [connection to your Fly network using WireGuard](https://fly.io/docs/reference/private-networking/#discovering-apps-through-dns-on-a-wireguard-connection). Then you can access your Unieai instance at `http://your-app-name.flycast`.
 
 And that's it!

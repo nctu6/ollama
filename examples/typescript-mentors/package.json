@@ -1,11 +1,11 @@
 {
   "scripts": {
-    "charactergen": "tsx character-generator.ts", 
+    "charactergen": "tsx character-generator.ts",
     "start": "tsx mentors.ts"
   },
   "dependencies": {
     "fs": "^0.0.1-security",
-    "ollama-node": "^0.0.3",
+    "unieai-node": "^0.0.3",
     "path": "^0.12.7"
   },
   "devDependencies": {

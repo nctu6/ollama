@@ -24,7 +24,7 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: path.join(app.getPath('home'), '.ollama', 'logs', 'server.log'),
+      filename: path.join(app.getPath('home'), '.unieai', 'logs', 'server.log'),
       maxsize: 1024 * 1024 * 20,
       maxFiles: 5,
     }),
@@ -116,14 +116,14 @@ function updateTray() {
 
   const menu = Menu.buildFromTemplate([
     ...(updateAvailable ? updateItems : []),
-    { role: 'quit', label: 'Quit Ollama', accelerator: 'Command+Q' },
+    { role: 'quit', label: 'Quit Unieai', accelerator: 'Command+Q' },
   ])
 
   if (!tray) {
     tray = new Tray(trayIconPath())
   }
 
-  tray.setToolTip(updateAvailable ? 'An update is available' : 'Ollama')
+  tray.setToolTip(updateAvailable ? 'An update is available' : 'Unieai')
   tray.setContextMenu(menu)
   tray.setImage(trayIconPath())
 
@@ -135,8 +135,8 @@ let proc: ChildProcess = null
 
 function server() {
   const binary = app.isPackaged
-    ? path.join(process.resourcesPath, 'ollama')
-    : path.resolve(process.cwd(), '..', 'ollama')
+    ? path.join(process.resourcesPath, 'unieai')
+    : path.resolve(process.cwd(), '..', 'unieai')
 
   proc = spawn(binary, ['serve'])
 
@@ -162,7 +162,7 @@ app.on('before-quit', () => {
   }
 })
 
-const updateURL = `https://ollama.com/api/update?os=${process.platform}&arch=${
+const updateURL = `https://unieai.com/api/update?os=${process.platform}&arch=${
   process.arch
 }&version=${app.getVersion()}&id=${id()}`
 
@@ -223,7 +223,7 @@ function init() {
         const chosen = dialog.showMessageBoxSync({
           type: 'question',
           buttons: ['Move to Applications', 'Do Not Move'],
-          message: 'Ollama works best when run from the Applications directory.',
+          message: 'Unieai works best when run from the Applications directory.',
           defaultId: 0,
           cancelId: 1,
         })
@@ -237,7 +237,7 @@ function init() {
                     type: 'info',
                     message: 'Cannot move to Applications directory',
                     detail:
-                      'Another version of Ollama is currently running from your Applications directory. Close it first and try again.',
+                      'Another version of Unieai is currently running from your Applications directory. Close it first and try again.',
                   })
                 }
                 return true

@@ -8,7 +8,7 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/ollama/ollama/format"
+	"github.com/nctu6/unieai/format"
 )
 
 type Bar struct {

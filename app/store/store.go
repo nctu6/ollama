@@ -69,11 +69,11 @@ func initStore() {
 }
 
 func writeStore(storeFilename string) {
-	ollamaDir := filepath.Dir(storeFilename)
-	_, err := os.Stat(ollamaDir)
+	unieaiDir := filepath.Dir(storeFilename)
+	_, err := os.Stat(unieaiDir)
 	if errors.Is(err, os.ErrNotExist) {
-		if err := os.MkdirAll(ollamaDir, 0o755); err != nil {
-			slog.Error(fmt.Sprintf("create ollama dir %s: %v", ollamaDir, err))
+		if err := os.MkdirAll(unieaiDir, 0o755); err != nil {
+			slog.Error(fmt.Sprintf("create unieai dir %s: %v", unieaiDir, err))
 			return
 		}
 	}

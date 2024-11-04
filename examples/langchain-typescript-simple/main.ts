@@ -1,10 +1,10 @@
-import { Ollama } from 'langchain/llms/ollama';
+import { Unieai } from 'langchain/llms/unieai';
 import * as readline from "readline";
 
 async function main() {
-  const ollama = new Ollama({
-    model: 'mistral'    
-    // other parameters can be found at https://js.langchain.com/docs/api/llms_ollama/classes/Ollama
+  const unieai = new Unieai({
+    model: 'mistral'
+    // other parameters can be found at https://js.langchain.com/docs/api/llms_unieai/classes/Unieai
   });
 
   const rl = readline.createInterface({
@@ -13,8 +13,8 @@ async function main() {
   });
 
   rl.question("What is your question: \n", async (user_input) => {
-    const stream = await ollama.stream(user_input);
-  
+    const stream = await unieai.stream(user_input);
+
     for await (const chunk of stream) {
       process.stdout.write(chunk);
     }

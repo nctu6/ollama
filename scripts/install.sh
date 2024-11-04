@@ -1,6 +1,6 @@
 #!/bin/sh
-# This script installs Ollama on Linux.
-# It detects the current operating system architecture and installs the appropriate version of Ollama.
+# This script installs Unieai on Linux.
+# It detects the current operating system architecture and installs the appropriate version of Unieai.
 
 set -eu
 
@@ -42,7 +42,7 @@ case "$KERN" in
     *) ;;
 esac
 
-VER_PARAM="${OLLAMA_VERSION:+?version=$OLLAMA_VERSION}"
+VER_PARAM="${UNIEAI_VERSION:+?version=$unieai_VERSION}"
 
 SUDO=
 if [ "$(id -u)" -ne 0 ]; then
@@ -66,69 +66,69 @@ fi
 for BINDIR in /usr/local/bin /usr/bin /bin; do
     echo $PATH | grep -q $BINDIR && break || continue
 done
-OLLAMA_INSTALL_DIR=$(dirname ${BINDIR})
+UNIEAI_INSTALL_DIR=$(dirname ${BINDIR})
 
-status "Installing ollama to $OLLAMA_INSTALL_DIR"
+status "Installing unieai to $UNIEAI_INSTALL_DIR"
 $SUDO install -o0 -g0 -m755 -d $BINDIR
-$SUDO install -o0 -g0 -m755 -d "$OLLAMA_INSTALL_DIR"
-if curl -I --silent --fail --location "https://ollama.com/download/ollama-linux-${ARCH}.tgz${VER_PARAM}" >/dev/null ; then
+$SUDO install -o0 -g0 -m755 -d "$UNIEAI_INSTALL_DIR"
+if curl -I --silent --fail --location "https://unieai.com/download/unieai-linux-${ARCH}.tgz${VER_PARAM}" >/dev/null ; then
     status "Downloading Linux ${ARCH} bundle"
     curl --fail --show-error --location --progress-bar \
-        "https://ollama.com/download/ollama-linux-${ARCH}.tgz${VER_PARAM}" | \
-        $SUDO tar -xzf - -C "$OLLAMA_INSTALL_DIR"
+        "https://unieai.com/download/unieai-linux-${ARCH}.tgz${VER_PARAM}" | \
+        $SUDO tar -xzf - -C "$UNIEAI_INSTALL_DIR"
     BUNDLE=1
-    if [ "$OLLAMA_INSTALL_DIR/bin/ollama" != "$BINDIR/ollama" ] ; then
-        status "Making ollama accessible in the PATH in $BINDIR"
-        $SUDO ln -sf "$OLLAMA_INSTALL_DIR/ollama" "$BINDIR/ollama"
+    if [ "$UNIEAI_INSTALL_DIR/bin/unieai" != "$BINDIR/unieai" ] ; then
+        status "Making unieai accessible in the PATH in $BINDIR"
+        $SUDO ln -sf "$UNIEAI_INSTALL_DIR/unieai" "$BINDIR/unieai"
     fi
 else
     status "Downloading Linux ${ARCH} CLI"
-    curl --fail --show-error --location --progress-bar -o "$TEMP_DIR/ollama"\
-    "https://ollama.com/download/ollama-linux-${ARCH}${VER_PARAM}"
-    $SUDO install -o0 -g0 -m755 $TEMP_DIR/ollama $OLLAMA_INSTALL_DIR/ollama
+    curl --fail --show-error --location --progress-bar -o "$TEMP_DIR/unieai"\
+    "https://unieai.com/download/unieai-linux-${ARCH}${VER_PARAM}"
+    $SUDO install -o0 -g0 -m755 $TEMP_DIR/unieai $UNIEAI_INSTALL_DIR/unieai
     BUNDLE=0
-    if [ "$OLLAMA_INSTALL_DIR/ollama" != "$BINDIR/ollama" ] ; then
-        status "Making ollama accessible in the PATH in $BINDIR"
-        $SUDO ln -sf "$OLLAMA_INSTALL_DIR/ollama" "$BINDIR/ollama"
+    if [ "$UNIEAI_INSTALL_DIR/unieai" != "$BINDIR/unieai" ] ; then
+        status "Making unieai accessible in the PATH in $BINDIR"
+        $SUDO ln -sf "$UNIEAI_INSTALL_DIR/unieai" "$BINDIR/unieai"
     fi
 fi
 
 
 install_success() {
-    status 'The Ollama API is now available at 127.0.0.1:11434.'
-    status 'Install complete. Run "ollama" from the command line.'
+    status 'The Unieai API is now available at 127.0.0.1:11434.'
+    status 'Install complete. Run "unieai" from the command line.'
 }
 trap install_success EXIT
 
 # Everything from this point onwards is optional.
 
 configure_systemd() {
-    if ! id ollama >/dev/null 2>&1; then
-        status "Creating ollama user..."
-        $SUDO useradd -r -s /bin/false -U -m -d /usr/share/ollama ollama
+    if ! id unieai >/dev/null 2>&1; then
+        status "Creating unieai user..."
+        $SUDO useradd -r -s /bin/false -U -m -d /usr/share/unieai unieai
     fi
     if getent group render >/dev/null 2>&1; then
-        status "Adding ollama user to render group..."
-        $SUDO usermod -a -G render ollama
+        status "Adding unieai user to render group..."
+        $SUDO usermod -a -G render unieai
     fi
     if getent group video >/dev/null 2>&1; then
-        status "Adding ollama user to video group..."
-        $SUDO usermod -a -G video ollama
+        status "Adding unieai user to video group..."
+        $SUDO usermod -a -G video unieai
     fi
 
-    status "Adding current user to ollama group..."
-    $SUDO usermod -a -G ollama $(whoami)
+    status "Adding current user to unieai group..."
+    $SUDO usermod -a -G unieai $(whoami)
 
-    status "Creating ollama systemd service..."
-    cat <<EOF | $SUDO tee /etc/systemd/system/ollama.service >/dev/null
+    status "Creating unieai systemd service..."
+    cat <<EOF | $SUDO tee /etc/systemd/system/unieai.service >/dev/null
 [Unit]
-Description=Ollama Service
+Description=Unieai Service
 After=network-online.target
 
 [Service]
-ExecStart=$BINDIR/ollama serve
-User=ollama
-Group=ollama
+ExecStart=$BINDIR/unieai serve
+User=unieai
+Group=unieai
 Restart=always
 RestartSec=3
 Environment="PATH=$PATH"
@@ -139,11 +139,11 @@ EOF
     SYSTEMCTL_RUNNING="$(systemctl is-system-running || true)"
     case $SYSTEMCTL_RUNNING in
         running|degraded)
-            status "Enabling and starting ollama service..."
+            status "Enabling and starting unieai service..."
             $SUDO systemctl daemon-reload
-            $SUDO systemctl enable ollama
+            $SUDO systemctl enable unieai
 
-            start_service() { $SUDO systemctl restart ollama; }
+            start_service() { $SUDO systemctl restart unieai; }
             trap start_service EXIT
             ;;
     esac
@@ -193,7 +193,7 @@ fi
 
 if ! check_gpu lspci nvidia && ! check_gpu lshw nvidia && ! check_gpu lspci amdgpu && ! check_gpu lshw amdgpu; then
     install_success
-    warning "No NVIDIA/AMD GPU detected. Ollama will run in CPU-only mode."
+    warning "No NVIDIA/AMD GPU detected. Unieai will run in CPU-only mode."
     exit 0
 fi
 
@@ -201,8 +201,8 @@ if check_gpu lspci amdgpu || check_gpu lshw amdgpu; then
     if [ $BUNDLE -ne 0 ]; then
         status "Downloading Linux ROCm ${ARCH} bundle"
         curl --fail --show-error --location --progress-bar \
-            "https://ollama.com/download/ollama-linux-${ARCH}-rocm.tgz${VER_PARAM}" | \
-            $SUDO tar -xzf - -C "$OLLAMA_INSTALL_DIR"
+            "https://unieai.com/download/unieai-linux-${ARCH}-rocm.tgz${VER_PARAM}" | \
+            $SUDO tar -xzf - -C "$UNIEAI_INSTALL_DIR"
 
         install_success
         status "AMD GPU ready."
@@ -218,11 +218,11 @@ if check_gpu lspci amdgpu || check_gpu lshw amdgpu; then
     done
 
     status "Downloading AMD GPU dependencies..."
-    $SUDO rm -rf /usr/share/ollama/lib
-    $SUDO chmod o+x /usr/share/ollama
-    $SUDO install -o ollama -g ollama -m 755 -d /usr/share/ollama/lib/rocm
-    curl --fail --show-error --location --progress-bar "https://ollama.com/download/ollama-linux-amd64-rocm.tgz${VER_PARAM}" \
-        | $SUDO tar zx --owner ollama --group ollama -C /usr/share/ollama/lib/rocm .
+    $SUDO rm -rf /usr/share/unieai/lib
+    $SUDO chmod o+x /usr/share/unieai
+    $SUDO install -o unieai -g unieai -m 755 -d /usr/share/unieai/lib/rocm
+    curl --fail --show-error --location --progress-bar "https://unieai.com/download/unieai-linux-amd64-rocm.tgz${VER_PARAM}" \
+        | $SUDO tar zx --owner unieai --group unieai -C /usr/share/unieai/lib/rocm .
     install_success
     status "AMD GPU ready."
     exit 0
@@ -235,7 +235,7 @@ CUDA_REPO_ERR_MSG="NVIDIA GPU detected, but your OS and Architecture are not sup
 # ref: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#fedora
 install_cuda_driver_yum() {
     status 'Installing NVIDIA repository...'
-    
+
     case $PACKAGE_MANAGER in
         yum)
             $SUDO $PACKAGE_MANAGER -y install yum-utils

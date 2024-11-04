@@ -16,11 +16,11 @@ import (
 	"strings"
 	"text/template/parse"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/convert"
-	"github.com/ollama/ollama/llm"
-	"github.com/ollama/ollama/template"
-	"github.com/ollama/ollama/types/model"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/convert"
+	"github.com/nctu6/unieai/llm"
+	"github.com/nctu6/unieai/template"
+	"github.com/nctu6/unieai/types/model"
 )
 
 var intermediateBlobs map[string]string = make(map[string]string)
@@ -53,9 +53,9 @@ func parseFromModel(ctx context.Context, name model.Name, fn func(api.ProgressRe
 		}
 
 		switch layer.MediaType {
-		case "application/vnd.ollama.image.model",
-			"application/vnd.ollama.image.projector",
-			"application/vnd.ollama.image.adapter":
+		case "application/vnd.unieai.image.model",
+			"application/vnd.unieai.image.projector",
+			"application/vnd.unieai.image.adapter":
 			blobpath, err := GetBlobsPath(layer.Digest)
 			if err != nil {
 				return nil, err
@@ -100,7 +100,7 @@ func parseFromZipFile(_ context.Context, command string, baseLayers []*layerGGML
 
 	fn(api.ProgressResponse{Status: "converting model"})
 	// TODO(mxyng): this should write directly into a layer
-	// e.g. NewLayer(arch.Reader(), "application/vnd.ollama.image.model")
+	// e.g. NewLayer(arch.Reader(), "application/vnd.unieai.image.model")
 	t, err := os.CreateTemp(p, "fp16")
 	if err != nil {
 		return nil, err
@@ -127,12 +127,12 @@ func parseFromZipFile(_ context.Context, command string, baseLayers []*layerGGML
 		if err := convert.ConvertAdapter(convert.NewZipReader(r, p, 32<<20), t, baseModel.KV()); err != nil {
 			return nil, err
 		}
-		layerType = "application/vnd.ollama.image.adapter"
+		layerType = "application/vnd.unieai.image.adapter"
 	case "model":
 		if err := convert.ConvertModel(convert.NewZipReader(r, p, 32<<20), t); err != nil {
 			return nil, err
 		}
-		layerType = "application/vnd.ollama.image.model"
+		layerType = "application/vnd.unieai.image.model"
 	}
 
 	if _, err := t.Seek(0, io.SeekStart); err != nil {
@@ -191,13 +191,13 @@ func parseFromFile(ctx context.Context, command string, baseLayers []*layerGGML,
 			return nil, err
 		}
 
-		mediatype := "application/vnd.ollama.image.model"
+		mediatype := "application/vnd.unieai.image.model"
 		if ggml.Name() == "ggla" || ggml.KV().Kind() == "adapter" {
-			mediatype = "application/vnd.ollama.image.adapter"
+			mediatype = "application/vnd.unieai.image.adapter"
 		}
 
 		if _, ok := ggml.KV()[fmt.Sprintf("%s.vision.block_count", ggml.KV().Architecture())]; ok || ggml.KV().Kind() == "projector" {
-			mediatype = "application/vnd.ollama.image.projector"
+			mediatype = "application/vnd.unieai.image.projector"
 		}
 
 		var layer Layer
@@ -229,7 +229,7 @@ func detectChatTemplate(layers []*layerGGML) ([]*layerGGML, error) {
 			if t, err := template.Named(s); err != nil {
 				slog.Debug("template detection", "error", err)
 			} else {
-				layer, err := NewLayer(t.Reader(), "application/vnd.ollama.image.template")
+				layer, err := NewLayer(t.Reader(), "application/vnd.unieai.image.template")
 				if err != nil {
 					return nil, err
 				}
@@ -243,7 +243,7 @@ func detectChatTemplate(layers []*layerGGML) ([]*layerGGML, error) {
 						return nil, err
 					}
 
-					layer, err := NewLayer(&b, "application/vnd.ollama.image.params")
+					layer, err := NewLayer(&b, "application/vnd.unieai.image.params")
 					if err != nil {
 						return nil, err
 					}

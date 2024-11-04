@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ollama/ollama/envconfig"
+	"github.com/nctu6/unieai/envconfig"
 )
 
 type ModelPath struct {
@@ -21,7 +21,7 @@ type ModelPath struct {
 }
 
 const (
-	DefaultRegistry       = "registry.ollama.ai"
+	DefaultRegistry       = "registry.unieai.ai"
 	DefaultNamespace      = "library"
 	DefaultTag            = "latest"
 	DefaultProtocolScheme = "https"

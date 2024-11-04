@@ -11,8 +11,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ollama/ollama/envconfig"
-	"github.com/ollama/ollama/format"
+	"github.com/nctu6/unieai/envconfig"
+	"github.com/nctu6/unieai/format"
 )
 
 const (
@@ -163,10 +163,10 @@ func AMDValidateLibDir() (string, error) {
 
 	// Installer payload (if we're running from some other location)
 	localAppData := os.Getenv("LOCALAPPDATA")
-	appDir := filepath.Join(localAppData, "Programs", "Ollama")
-	rocmTargetDir := filepath.Join(appDir, envconfig.LibRelativeToExe(), "lib", "ollama")
+	appDir := filepath.Join(localAppData, "Programs", "Unieai")
+	rocmTargetDir := filepath.Join(appDir, envconfig.LibRelativeToExe(), "lib", "unieai")
 	if rocmLibUsable(rocmTargetDir) {
-		slog.Debug("detected ollama installed ROCm at " + rocmTargetDir)
+		slog.Debug("detected unieai installed ROCm at " + rocmTargetDir)
 		return rocmTargetDir, nil
 	}
 

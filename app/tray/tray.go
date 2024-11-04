@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/ollama/ollama/app/assets"
-	"github.com/ollama/ollama/app/tray/commontray"
+	"github.com/nctu6/unieai/app/assets"
+	"github.com/nctu6/unieai/app/tray/commontray"
 )
 
-func NewTray() (commontray.OllamaTray, error) {
+func NewTray() (commontray.UnieaiTray, error) {
 	extension := ".png"
 	if runtime.GOOS == "windows" {
 		extension = ".ico"

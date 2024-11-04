@@ -3,12 +3,12 @@
 package wintray
 
 const (
-	firstTimeTitle   = "Ollama is running"
+	firstTimeTitle   = "Unieai is running"
 	firstTimeMessage = "Click here to get started"
 	updateTitle      = "Update available"
-	updateMessage    = "Ollama version %s is ready to install"
+	updateMessage    = "Unieai version %s is ready to install"
 
-	quitMenuTitle            = "Quit Ollama"
+	quitMenuTitle            = "Quit Unieai"
 	updateAvailableMenuTitle = "An update is available"
 	updateMenutTitle         = "Restart to update"
 	diagLogsMenuTitle        = "View logs"

@@ -1,6 +1,6 @@
 # Simple Chat Example
 
-The **chat** endpoint, available as of v0.1.14, is one of two ways to generate text from an LLM with Ollama. At a high level, you provide the endpoint an array of message objects with a role and content specified. Then with each output and prompt, you add more messages, which builds up the history.
+The **chat** endpoint, available as of v0.1.14, is one of two ways to generate text from an LLM with Unieai. At a high level, you provide the endpoint an array of message objects with a role and content specified. Then with each output and prompt, you add more messages, which builds up the history.
 
 ## Run the Example
 

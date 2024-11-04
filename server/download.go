@@ -22,8 +22,8 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/format"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/format"
 )
 
 const maxRetries = 6
@@ -366,7 +366,7 @@ func (b *blobDownload) downloadChunk(ctx context.Context, requestURL *url.URL, w
 				part.lastUpdatedMu.Unlock()
 
 				if !lastUpdated.IsZero() && time.Since(lastUpdated) > 5*time.Second {
-					const msg = "%s part %d stalled; retrying. If this persists, press ctrl-c to exit, then 'ollama pull' to find a faster connection."
+					const msg = "%s part %d stalled; retrying. If this persists, press ctrl-c to exit, then 'unieai pull' to find a faster connection."
 					slog.Info(fmt.Sprintf(msg, b.Digest[7:19], part.N))
 					// reset last updated
 					part.lastUpdatedMu.Lock()

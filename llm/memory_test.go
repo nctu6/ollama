@@ -9,12 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/discover"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/discover"
 )
 
 func TestEstimateGPULayers(t *testing.T) {
-	t.Setenv("OLLAMA_DEBUG", "1")
+	t.Setenv("UNIEAI_DEBUG", "1")
 
 	modelName := "dummy"
 	f, err := os.CreateTemp(t.TempDir(), modelName)

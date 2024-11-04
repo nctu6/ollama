@@ -22,17 +22,17 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/auth"
-	"github.com/ollama/ollama/envconfig"
-	"github.com/ollama/ollama/format"
-	"github.com/ollama/ollama/llama"
-	"github.com/ollama/ollama/llm"
-	"github.com/ollama/ollama/parser"
-	"github.com/ollama/ollama/template"
-	"github.com/ollama/ollama/types/errtypes"
-	"github.com/ollama/ollama/types/model"
-	"github.com/ollama/ollama/version"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/auth"
+	"github.com/nctu6/unieai/envconfig"
+	"github.com/nctu6/unieai/format"
+	"github.com/nctu6/unieai/llama"
+	"github.com/nctu6/unieai/llm"
+	"github.com/nctu6/unieai/parser"
+	"github.com/nctu6/unieai/template"
+	"github.com/nctu6/unieai/types/errtypes"
+	"github.com/nctu6/unieai/types/model"
+	"github.com/nctu6/unieai/version"
 )
 
 var (
@@ -270,19 +270,19 @@ func GetModel(name string) (*Model, error) {
 		}
 
 		switch layer.MediaType {
-		case "application/vnd.ollama.image.model":
+		case "application/vnd.unieai.image.model":
 			model.ModelPath = filename
 			model.ParentModel = layer.From
-		case "application/vnd.ollama.image.embed":
+		case "application/vnd.unieai.image.embed":
 			// Deprecated in versions  > 0.1.2
 			// TODO: remove this warning in a future version
 			slog.Info("WARNING: model contains embeddings, but embeddings in modelfiles have been deprecated and will be ignored.")
-		case "application/vnd.ollama.image.adapter":
+		case "application/vnd.unieai.image.adapter":
 			model.AdapterPaths = append(model.AdapterPaths, filename)
-		case "application/vnd.ollama.image.projector":
+		case "application/vnd.unieai.image.projector":
 			model.ProjectorPaths = append(model.ProjectorPaths, filename)
-		case "application/vnd.ollama.image.prompt",
-			"application/vnd.ollama.image.template":
+		case "application/vnd.unieai.image.prompt",
+			"application/vnd.unieai.image.template":
 			bts, err := os.ReadFile(filename)
 			if err != nil {
 				return nil, err
@@ -292,14 +292,14 @@ func GetModel(name string) (*Model, error) {
 			if err != nil {
 				return nil, err
 			}
-		case "application/vnd.ollama.image.system":
+		case "application/vnd.unieai.image.system":
 			bts, err := os.ReadFile(filename)
 			if err != nil {
 				return nil, err
 			}
 
 			model.System = string(bts)
-		case "application/vnd.ollama.image.params":
+		case "application/vnd.unieai.image.params":
 			params, err := os.Open(filename)
 			if err != nil {
 				return nil, err
@@ -310,7 +310,7 @@ func GetModel(name string) (*Model, error) {
 			if err = json.NewDecoder(params).Decode(&model.Options); err != nil {
 				return nil, err
 			}
-		case "application/vnd.ollama.image.messages":
+		case "application/vnd.unieai.image.messages":
 			msgs, err := os.Open(filename)
 			if err != nil {
 				return nil, err
@@ -320,7 +320,7 @@ func GetModel(name string) (*Model, error) {
 			if err = json.NewDecoder(msgs).Decode(&model.Messages); err != nil {
 				return nil, err
 			}
-		case "application/vnd.ollama.image.license":
+		case "application/vnd.unieai.image.license":
 			bts, err := os.ReadFile(filename)
 			if err != nil {
 				return nil, err
@@ -372,7 +372,7 @@ func CreateModel(ctx context.Context, name model.Name, modelFileDir, quantizatio
 	var layers []Layer
 	var baseLayers []*layerGGML
 	for _, c := range modelfile.Commands {
-		mediatype := fmt.Sprintf("application/vnd.ollama.image.%s", c.Name)
+		mediatype := fmt.Sprintf("application/vnd.unieai.image.%s", c.Name)
 		command := c.Name
 
 		switch command {
@@ -428,7 +428,7 @@ func CreateModel(ctx context.Context, name model.Name, modelFileDir, quantizatio
 
 			for _, baseLayer := range baseLayers {
 				if quantization != "" &&
-					baseLayer.MediaType == "application/vnd.ollama.image.model" &&
+					baseLayer.MediaType == "application/vnd.unieai.image.model" &&
 					baseLayer.GGML != nil &&
 					baseLayer.GGML.Name() == "gguf" {
 					want, err := llm.ParseFileType(quantization)
@@ -544,14 +544,14 @@ func CreateModel(ctx context.Context, name model.Name, modelFileDir, quantizatio
 	var err2 error
 	layers = slices.DeleteFunc(layers, func(layer Layer) bool {
 		switch layer.MediaType {
-		case "application/vnd.ollama.image.message":
+		case "application/vnd.unieai.image.message":
 			// if there are new messages, remove the inherited ones
 			if len(messages) > 0 {
 				return true
 			}
 
 			return false
-		case "application/vnd.ollama.image.params":
+		case "application/vnd.unieai.image.params":
 			// merge inherited parameters with new ones
 			r, err := layer.Open()
 			if err != nil {
@@ -588,7 +588,7 @@ func CreateModel(ctx context.Context, name model.Name, modelFileDir, quantizatio
 			return err
 		}
 
-		layer, err := NewLayer(&b, "application/vnd.ollama.image.messages")
+		layer, err := NewLayer(&b, "application/vnd.unieai.image.messages")
 		if err != nil {
 			return err
 		}
@@ -602,7 +602,7 @@ func CreateModel(ctx context.Context, name model.Name, modelFileDir, quantizatio
 			return err
 		}
 
-		layer, err := NewLayer(&b, "application/vnd.ollama.image.params")
+		layer, err := NewLayer(&b, "application/vnd.unieai.image.params")
 		if err != nil {
 			return err
 		}
@@ -1064,7 +1064,7 @@ func makeRequestWithRetry(ctx context.Context, method string, requestURL *url.UR
 			slog.Error(fmt.Sprintf("couldn't get public key: %v", nestedErr))
 			return nil, errUnauthorized
 		}
-		return nil, &errtypes.UnknownOllamaKey{Key: pubKey}
+		return nil, &errtypes.UnknownUnieaiKey{Key: pubKey}
 	}
 	// user is associated with the public key, but is not authorized to make the request
 	return nil, errUnauthorized
@@ -1092,7 +1092,7 @@ func makeRequest(ctx context.Context, method string, requestURL *url.URL, header
 		}
 	}
 
-	req.Header.Set("User-Agent", fmt.Sprintf("ollama/%s (%s %s) Go/%s", version.Version, runtime.GOARCH, runtime.GOOS, runtime.Version()))
+	req.Header.Set("User-Agent", fmt.Sprintf("unieai/%s (%s %s) Go/%s", version.Version, runtime.GOARCH, runtime.GOOS, runtime.Version()))
 
 	if s := req.Header.Get("Content-Length"); s != "" {
 		contentLength, err := strconv.ParseInt(s, 10, 64)

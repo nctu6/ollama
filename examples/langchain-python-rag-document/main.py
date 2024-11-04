@@ -2,7 +2,7 @@ from langchain.document_loaders import OnlinePDFLoader
 from langchain.vectorstores import Chroma
 from langchain.embeddings import GPT4AllEmbeddings
 from langchain import PromptTemplate
-from langchain.llms import Ollama
+from langchain.llms import Unieai
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains import RetrievalQA
@@ -51,7 +51,7 @@ while True:
         template=template,
     )
 
-    llm = Ollama(model="llama3.2", callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]))
+    llm = Unieai(model="llama3.2", callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]))
     qa_chain = RetrievalQA.from_chain_type(
         llm,
         retriever=vectorstore.as_retriever(),

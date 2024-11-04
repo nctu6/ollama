@@ -1,6 +1,6 @@
 # LangChain
 
-This example is a basic "hello world" of using LangChain with Ollama using Node.js and Typescript.
+This example is a basic "hello world" of using LangChain with Unieai using Node.js and Typescript.
 
 ## Running the Example
 
@@ -13,7 +13,7 @@ This example is a basic "hello world" of using LangChain with Ollama using Node.
 2. Ensure the `mistral` model is available:
 
    ```bash
-   ollama pull mistral
+   unieai pull mistral
    ```
 
 3. Run the example:

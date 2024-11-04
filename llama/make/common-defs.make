@@ -24,7 +24,7 @@ export CGO_ENABLED=1
 SRC_DIR := $(dir $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST))))))
 BUILD_DIR = $(SRC_DIR)build/$(OS)-$(ARCH)
 DIST_BASE = $(abspath $(SRC_DIR)/../dist/$(OS)-$(ARCH))
-DIST_LIB_DIR = $(DIST_BASE)/lib/ollama
+DIST_LIB_DIR = $(DIST_BASE)/lib/unieai
 RUNNERS_DIST_DIR = $(DIST_LIB_DIR)/runners
 RUNNERS_PAYLOAD_DIR = $(abspath $(SRC_DIR)/../build/$(OS)/$(ARCH))
 RUNNERS_BUILD_DIR = $(BUILD_DIR)/runners
@@ -55,7 +55,7 @@ ifeq ($(OS),windows)
 	OBJ_EXT := obj
 	SHARED_EXT := dll
 	EXE_EXT := .exe
-	SHARED_PREFIX := 
+	SHARED_PREFIX :=
 	CPU_FLAG_PREFIX := /arch:
 ifneq ($(HIP_PATH),)
 	# If HIP_PATH has spaces, hipcc trips over them when subprocessing

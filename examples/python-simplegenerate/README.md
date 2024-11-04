@@ -7,7 +7,7 @@ This is a simple example using the **Generate** endpoint.
 1. Ensure you have the `stablelm-zephyr` model installed:
 
    ```bash
-   ollama pull stablelm-zephyr
+   unieai pull stablelm-zephyr
    ```
 
 2. Install the Python Requirements.

@@ -1,10 +1,10 @@
 package tray
 
 import (
-	"github.com/ollama/ollama/app/tray/commontray"
-	"github.com/ollama/ollama/app/tray/wintray"
+	"github.com/nctu6/unieai/app/tray/commontray"
+	"github.com/nctu6/unieai/app/tray/wintray"
 )
 
-func InitPlatformTray(icon, updateIcon []byte) (commontray.OllamaTray, error) {
+func InitPlatformTray(icon, updateIcon []byte) (commontray.UnieaiTray, error) {
 	return wintray.InitTray(icon, updateIcon)
 }

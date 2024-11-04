@@ -6,12 +6,12 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/ollama/ollama/api"
+	"github.com/nctu6/unieai/api"
 )
 
 func TestExtractFilenames(t *testing.T) {
 	// Unix style paths
-	input := ` some preamble 
+	input := ` some preamble
  ./relative\ path/one.png inbetween1 ./not a valid two.jpg inbetween2
 /unescaped space /three.jpeg inbetween3 /valid\ path/dir/four.png "./quoted with spaces/five.svg`
 	res := extractFileNames(input)
@@ -26,10 +26,10 @@ func TestExtractFilenames(t *testing.T) {
 
 	// Windows style paths
 	input = ` some preamble
- c:/users/jdoe/one.png inbetween1 c:/program files/someplace/two.jpg inbetween2 
+ c:/users/jdoe/one.png inbetween1 c:/program files/someplace/two.jpg inbetween2
  /absolute/nospace/three.jpeg inbetween3 /absolute/with space/four.png inbetween4
 ./relative\ path/five.svg inbetween5 "./relative with/spaces/six.png inbetween6
-d:\path with\spaces\seven.svg inbetween7 c:\users\jdoe\eight.png inbetween8 
+d:\path with\spaces\seven.svg inbetween7 c:\users\jdoe\eight.png inbetween8
  d:\program files\someplace\nine.png inbetween9 "E:\program files\someplace\ten.svg some ending
 `
 	res = extractFileNames(input)

@@ -18,8 +18,8 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"github.com/ollama/ollama/discover"
-	"github.com/ollama/ollama/envconfig"
+	"github.com/nctu6/unieai/discover"
+	"github.com/nctu6/unieai/envconfig"
 )
 
 const (
@@ -47,7 +47,7 @@ func Refresh(payloadFS fs.FS) (string, error) {
 				runners = append(runners, v)
 			}
 			slog.Info("Dynamic LLM libraries", "runners", runners)
-			slog.Debug("Override detection logic by setting OLLAMA_LLM_LIBRARY")
+			slog.Debug("Override detection logic by setting UNIEAI_LLM_LIBRARY")
 		}()
 	}
 
@@ -100,7 +100,7 @@ func locateRunners() (string, error) {
 
 	// Try a few variations to improve developer experience when building from source in the local tree
 	for _, path := range paths {
-		candidate := filepath.Join(path, "lib", "ollama", "runners")
+		candidate := filepath.Join(path, "lib", "unieai", "runners")
 		if _, err := os.Stat(candidate); err == nil {
 			return candidate, nil
 		}
@@ -119,17 +119,17 @@ func hasPayloads(payloadFS fs.FS) bool {
 
 func extractRunners(payloadFS fs.FS) (string, error) {
 	cleanupTmpDirs()
-	tmpDir, err := os.MkdirTemp(envconfig.TmpDir(), "ollama")
+	tmpDir, err := os.MkdirTemp(envconfig.TmpDir(), "unieai")
 	if err != nil {
 		return "", fmt.Errorf("failed to generate tmp dir: %w", err)
 	}
 	// Track our pid so we can clean up orphaned tmpdirs
-	n := filepath.Join(tmpDir, "ollama.pid")
+	n := filepath.Join(tmpDir, "unieai.pid")
 	if err := os.WriteFile(n, []byte(strconv.Itoa(os.Getpid())), 0o644); err != nil {
 		slog.Warn("failed to write pid file", "file", n, "error", err)
 	}
 	// We create a distinct subdirectory for payloads within the tmpdir
-	// This will typically look like /tmp/ollama3208993108/runners on linux
+	// This will typically look like /tmp/unieai3208993108/runners on linux
 	rDir := filepath.Join(tmpDir, "runners")
 
 	slog.Info("extracting embedded files", "dir", rDir)
@@ -228,7 +228,7 @@ func cleanupTmpDirs() {
 	if tmpDir == "" {
 		tmpDir = os.TempDir()
 	}
-	matches, err := filepath.Glob(filepath.Join(tmpDir, "ollama*", "ollama.pid"))
+	matches, err := filepath.Glob(filepath.Join(tmpDir, "unieai*", "unieai.pid"))
 	if err != nil {
 		return
 	}
@@ -236,10 +236,10 @@ func cleanupTmpDirs() {
 	for _, match := range matches {
 		raw, err := os.ReadFile(match)
 		if errors.Is(err, os.ErrNotExist) {
-			slog.Debug("not a ollama runtime directory, skipping", "path", match)
+			slog.Debug("not a unieai runtime directory, skipping", "path", match)
 			continue
 		} else if err != nil {
-			slog.Warn("could not read ollama.pid, skipping", "path", match, "error", err)
+			slog.Warn("could not read unieai.pid, skipping", "path", match, "error", err)
 			continue
 		}
 
@@ -280,8 +280,8 @@ func GetAvailableServers(payloadsDir string) map[string]string {
 		return nil
 	}
 
-	// glob payloadsDir for files that start with ollama_
-	pattern := filepath.Join(payloadsDir, "*", "ollama_*")
+	// glob payloadsDir for files that start with unieai_
+	pattern := filepath.Join(payloadsDir, "*", "unieai_*")
 
 	files, err := filepath.Glob(pattern)
 	if err != nil {
@@ -302,7 +302,7 @@ func GetAvailableServers(payloadsDir string) map[string]string {
 // info, ordered by performance. assumes Init() has been called
 // TODO - switch to metadata based mapping
 func ServersForGpu(info discover.GpuInfo) []string {
-	// glob workDir for files that start with ollama_
+	// glob workDir for files that start with unieai_
 	availableServers := GetAvailableServers(runnersDir)
 	requested := info.Library
 	if info.Variant != discover.CPUCapabilityNone.String() {

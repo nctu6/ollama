@@ -5,7 +5,7 @@
 .venv
 .swp
 dist
-ollama
+unieai
 .cache
 *.exe
 .idea

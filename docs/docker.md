@@ -1,9 +1,9 @@
-# Ollama Docker image
+# Unieai Docker image
 
 ### CPU only
 
 ```bash
-docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
+docker run -d -v unieai:/root/.unieai -p 11434:11434 --name unieai unieai/unieai
 ```
 
 ### Nvidia GPU
@@ -47,15 +47,15 @@ sudo systemctl restart docker
 #### Start the container
 
 ```bash
-docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
+docker run -d --gpus=all -v unieai:/root/.unieai -p 11434:11434 --name unieai unieai/unieai
 ```
 
 ### AMD GPU
 
-To run Ollama using Docker with AMD GPUs, use the `rocm` tag and the following command:
+To run Unieai using Docker with AMD GPUs, use the `rocm` tag and the following command:
 
 ```
-docker run -d --device /dev/kfd --device /dev/dri -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama:rocm
+docker run -d --device /dev/kfd --device /dev/dri -v unieai:/root/.unieai -p 11434:11434 --name unieai unieai/unieai:rocm
 ```
 
 ### Run model locally
@@ -63,9 +63,9 @@ docker run -d --device /dev/kfd --device /dev/dri -v ollama:/root/.ollama -p 114
 Now you can run a model:
 
 ```
-docker exec -it ollama ollama run llama3.2
+docker exec -it unieai unieai run llama3.2
 ```
 
 ### Try different models
 
-More models can be found on the [Ollama library](https://ollama.com/library).
+More models can be found on the [Unieai library](https://unieai.com/library).

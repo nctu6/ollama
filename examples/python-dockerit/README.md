@@ -7,7 +7,7 @@ DockerIt is a tool to help you build and run your application in a Docker contai
 1. Ensure you have the `mattw/dockerit` model installed:
 
    ```bash
-   ollama pull mattw/dockerit
+   unieai pull mattw/dockerit
    ```
 
 2. Make sure Docker is running on your machine.

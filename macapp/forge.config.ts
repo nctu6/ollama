@@ -18,7 +18,7 @@ const config: ForgeConfig = {
     asar: true,
     icon: './assets/icon.icns',
     extraResource: [
-      '../dist/ollama',
+      '../dist/unieai',
       path.join(__dirname, './assets/iconTemplate.png'),
       path.join(__dirname, './assets/iconTemplate@2x.png'),
       path.join(__dirname, './assets/iconUpdateTemplate.png'),
@@ -42,7 +42,7 @@ const config: ForgeConfig = {
         }
       : {}),
     osxUniversal: {
-      x64ArchFiles: '**/ollama',
+      x64ArchFiles: '**/unieai',
     },
   },
   rebuildConfig: {},

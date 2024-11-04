@@ -1,4 +1,4 @@
-module github.com/ollama/ollama
+module github.com/nctu6/unieai
 
 go 1.22.8
 

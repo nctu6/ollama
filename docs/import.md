@@ -5,7 +5,7 @@
   * [Importing a Safetensors adapter](#Importing-a-fine-tuned-adapter-from-Safetensors-weights)
   * [Importing a Safetensors model](#Importing-a-model-from-Safetensors-weights)
   * [Importing a GGUF file](#Importing-a-GGUF-based-model-or-adapter)
-  * [Sharing models on ollama.com](#Sharing-your-model-on-ollamacom)
+  * [Sharing models on unieai.com](#Sharing-your-model-on-unieaicom)
 
 ## Importing a fine tuned adapter from Safetensors weights
 
@@ -18,19 +18,19 @@ ADAPTER /path/to/safetensors/adapter/directory
 
 Make sure that you use the same base model in the `FROM` command as you used to create the adapter otherwise you will get erratic results. Most frameworks use different quantization methods, so it's best to use non-quantized (i.e. non-QLoRA) adapters. If your adapter is in the same directory as your `Modelfile`, use `ADAPTER .` to specify the adapter path.
 
-Now run `ollama create` from the directory where the `Modelfile` was created:
+Now run `unieai create` from the directory where the `Modelfile` was created:
 
 ```bash
-ollama create my-model
+unieai create my-model
 ```
 
 Lastly, test the model:
 
 ```bash
-ollama run my-model
+unieai run my-model
 ```
 
-Ollama supports importing adapters based on several different model architectures including:
+Unieai supports importing adapters based on several different model architectures including:
 
   * Llama (including Llama 2, Llama 3, and Llama 3.1);
   * Mistral (including Mistral 1, Mistral 2, and Mixtral); and
@@ -53,19 +53,19 @@ FROM /path/to/safetensors/directory
 
 If you create the Modelfile in the same directory as the weights, you can use the command `FROM .`.
 
-Now run the `ollama create` command from the directory where you created the `Modelfile`:
+Now run the `unieai create` command from the directory where you created the `Modelfile`:
 
 ```shell
-ollama create my-model
+unieai create my-model
 ```
 
 Lastly, test the model:
 
 ```shell
-ollama run my-model
+unieai run my-model
 ```
 
-Ollama supports importing models for several different architectures including:
+Unieai supports importing models for several different architectures including:
 
   * Llama (including Llama 2, Llama 3, and Llama 3.1);
   * Mistral (including Mistral 1, Mistral 2, and Mixtral);
@@ -77,9 +77,9 @@ This includes importing foundation models as well as any fine tuned models which
 
 ## Importing a GGUF based model or adapter
 
-If you have a GGUF based model or adapter it is possible to import it into Ollama. You can obtain a GGUF model or adapter by:
+If you have a GGUF based model or adapter it is possible to import it into Unieai. You can obtain a GGUF model or adapter by:
 
-  * converting a Safetensors model with the `convert_hf_to_gguf.py` from Llama.cpp; 
+  * converting a Safetensors model with the `convert_hf_to_gguf.py` from Llama.cpp;
   * converting a Safetensors adapter with the `convert_lora_to_gguf.py` from Llama.cpp; or
   * downloading a model or adapter from a place such as HuggingFace
 
@@ -98,21 +98,21 @@ ADAPTER /path/to/file.gguf
 
 When importing a GGUF adapter, it's important to use the same base model as the base model that the adapter was created with. You can use:
 
- * a model from Ollama
+ * a model from Unieai
  * a GGUF file
- * a Safetensors based model 
+ * a Safetensors based model
 
-Once you have created your `Modelfile`, use the `ollama create` command to build the model.
+Once you have created your `Modelfile`, use the `unieai create` command to build the model.
 
 ```shell
-ollama create my-model
+unieai create my-model
 ```
 
 ## Quantizing a Model
 
 Quantizing a model allows you to run models faster and with less memory consumption but at reduced accuracy. This allows you to run a model on more modest hardware.
 
-Ollama can quantize FP16 and FP32 based models into different quantization levels using the `-q/--quantize` flag with the `ollama create` command.
+Unieai can quantize FP16 and FP32 based models into different quantization levels using the `-q/--quantize` flag with the `unieai create` command.
 
 First, create a Modelfile with the FP16 or FP32 based model you wish to quantize.
 
@@ -120,10 +120,10 @@ First, create a Modelfile with the FP16 or FP32 based model you wish to quantize
 FROM /path/to/my/gemma/f16/model
 ```
 
-Use `ollama create` to then create the quantized model.
+Use `unieai create` to then create the quantized model.
 
 ```shell
-$ ollama create --quantize q4_K_M mymodel
+$ unieai create --quantize q4_K_M mymodel
 transferring model data
 quantizing F16 model to Q4_K_M
 creating new layer sha256:735e246cc1abfd06e9cdcf95504d6789a6cd1ad7577108a70d9902fef503c1bd
@@ -152,35 +152,35 @@ success
 - `q6_K`
 
 
-## Sharing your model on ollama.com
+## Sharing your model on unieai.com
 
-You can share any model you have created by pushing it to [ollama.com](https://ollama.com) so that other users can try it out.
+You can share any model you have created by pushing it to [unieai.com](https://unieai.com) so that other users can try it out.
 
-First, use your browser to go to the [Ollama Sign-Up](https://ollama.com/signup) page. If you already have an account, you can skip this step.
+First, use your browser to go to the [Unieai Sign-Up](https://unieai.com/signup) page. If you already have an account, you can skip this step.
 
 <img src="images/signup.png" alt="Sign-Up" width="40%">
 
 The `Username` field will be used as part of your model's name (e.g. `jmorganca/mymodel`), so make sure you are comfortable with the username that you have selected.
 
-Now that you have created an account and are signed-in, go to the [Ollama Keys Settings](https://ollama.com/settings/keys) page.
+Now that you have created an account and are signed-in, go to the [Unieai Keys Settings](https://unieai.com/settings/keys) page.
 
-Follow the directions on the page to determine where your Ollama Public Key is located.
+Follow the directions on the page to determine where your Unieai Public Key is located.
 
-<img src="images/ollama-keys.png" alt="Ollama Keys" width="80%">
+<img src="images/unieai-keys.png" alt="Unieai Keys" width="80%">
 
-Click on the `Add Ollama Public Key` button, and copy and paste the contents of your Ollama Public Key into the text field.
+Click on the `Add Unieai Public Key` button, and copy and paste the contents of your Unieai Public Key into the text field.
 
-To push a model to [ollama.com](https://ollama.com), first make sure that it is named correctly with your username. You may have to use the `ollama cp` command to copy
-your model to give it the correct name. Once you're happy with your model's name, use the `ollama push` command to push it to [ollama.com](https://ollama.com).
+To push a model to [unieai.com](https://unieai.com), first make sure that it is named correctly with your username. You may have to use the `unieai cp` command to copy
+your model to give it the correct name. Once you're happy with your model's name, use the `unieai push` command to push it to [unieai.com](https://unieai.com).
 
 ```shell
-ollama cp mymodel myuser/mymodel
-ollama push myuser/mymodel
+unieai cp mymodel myuser/mymodel
+unieai push myuser/mymodel
 ```
 
 Once your model has been pushed, other users can pull and run it by using the command:
 
 ```shell
-ollama run myuser/mymodel
+unieai run myuser/mymodel
 ```
 

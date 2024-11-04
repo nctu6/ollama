@@ -15,12 +15,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/llm"
-	"github.com/ollama/ollama/openai"
-	"github.com/ollama/ollama/parser"
-	"github.com/ollama/ollama/types/model"
-	"github.com/ollama/ollama/version"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/llm"
+	"github.com/nctu6/unieai/openai"
+	"github.com/nctu6/unieai/parser"
+	"github.com/nctu6/unieai/types/model"
+	"github.com/nctu6/unieai/version"
 )
 
 func createTestFile(t *testing.T, name string) string {
@@ -80,7 +80,7 @@ func Test_Routes(t *testing.T) {
 	createTestModel := func(t *testing.T, name string) {
 		t.Helper()
 
-		fname := createTestFile(t, "ollama-model")
+		fname := createTestFile(t, "unieai-model")
 
 		r := strings.NewReader(fmt.Sprintf("FROM %s\nPARAMETER seed 42\nPARAMETER top_p 0.9\nPARAMETER stop foo\nPARAMETER stop bar", fname))
 		modelfile, err := parser.ParseFile(r)
@@ -296,7 +296,7 @@ func Test_Routes(t *testing.T) {
 			Method: http.MethodPost,
 			Path:   "/api/create",
 			Setup: func(t *testing.T, req *http.Request) {
-				fname := createTestFile(t, "ollama-model")
+				fname := createTestFile(t, "unieai-model")
 
 				stream := false
 				createReq := api.CreateRequest{
@@ -440,7 +440,7 @@ func Test_Routes(t *testing.T) {
 		},
 	}
 
-	t.Setenv("OLLAMA_MODELS", t.TempDir())
+	t.Setenv("UNIEAI_MODELS", t.TempDir())
 
 	s := &Server{}
 	router := s.GenerateRoutes()
@@ -474,13 +474,13 @@ func Test_Routes(t *testing.T) {
 }
 
 func TestCase(t *testing.T) {
-	t.Setenv("OLLAMA_MODELS", t.TempDir())
+	t.Setenv("UNIEAI_MODELS", t.TempDir())
 
 	cases := []string{
 		"mistral",
 		"llama3:latest",
 		"library/phi3:q4_0",
-		"registry.ollama.ai/library/gemma:q5_K_M",
+		"registry.unieai.ai/library/gemma:q5_K_M",
 		// TODO: host:port currently fails on windows (#4107)
 		// "localhost:5000/alice/bob:latest",
 	}
@@ -553,7 +553,7 @@ func TestCase(t *testing.T) {
 }
 
 func TestShow(t *testing.T) {
-	t.Setenv("OLLAMA_MODELS", t.TempDir())
+	t.Setenv("UNIEAI_MODELS", t.TempDir())
 
 	var s Server
 

@@ -1,8 +1,8 @@
 # OpenAI compatibility
 
-> **Note:** OpenAI compatibility is experimental and is subject to major adjustments including breaking changes. For fully-featured access to the Ollama API, see the Ollama [Python library](https://github.com/ollama/ollama-python), [JavaScript library](https://github.com/ollama/ollama-js) and [REST API](https://github.com/ollama/ollama/blob/main/docs/api.md).
+> **Note:** OpenAI compatibility is experimental and is subject to major adjustments including breaking changes. For fully-featured access to the Unieai API, see the Unieai [Python library](https://github.com/nctu6/unieai-python), [JavaScript library](https://github.com/nctu6/unieai-js) and [REST API](https://github.com/nctu6/unieai/blob/main/docs/api.md).
 
-Ollama provides experimental compatibility with parts of the [OpenAI API](https://platform.openai.com/docs/api-reference) to help connect existing applications to Ollama.
+Unieai provides experimental compatibility with parts of the [OpenAI API](https://platform.openai.com/docs/api-reference) to help connect existing applications to Unieai.
 
 ## Usage
 
@@ -15,7 +15,7 @@ client = OpenAI(
     base_url='http://localhost:11434/v1/',
 
     # required but ignored
-    api_key='ollama',
+    api_key='unieai',
 )
 
 chat_completion = client.chat.completions.create(
@@ -69,7 +69,7 @@ const openai = new OpenAI({
   baseURL: 'http://localhost:11434/v1/',
 
   // required but ignored
-  apiKey: 'ollama',
+  apiKey: 'unieai',
 })
 
 const chatCompletion = await openai.chat.completions.create({
@@ -246,14 +246,14 @@ curl http://localhost:11434/v1/embeddings \
 #### Notes
 
 - `created` corresponds to when the model was last modified
-- `owned_by` corresponds to the ollama username, defaulting to `"library"`
+- `owned_by` corresponds to the unieai username, defaulting to `"library"`
 
 ### `/v1/models/{model}`
 
 #### Notes
 
 - `created` corresponds to when the model was last modified
-- `owned_by` corresponds to the ollama username, defaulting to `"library"`
+- `owned_by` corresponds to the unieai username, defaulting to `"library"`
 
 ### `/v1/embeddings`
 
@@ -271,18 +271,18 @@ curl http://localhost:11434/v1/embeddings \
 
 ## Models
 
-Before using a model, pull it locally `ollama pull`:
+Before using a model, pull it locally `unieai pull`:
 
 ```shell
-ollama pull llama3.2
+unieai pull llama3.2
 ```
 
 ### Default model names
 
-For tooling that relies on default OpenAI model names such as `gpt-3.5-turbo`, use `ollama cp` to copy an existing model name to a temporary name:
+For tooling that relies on default OpenAI model names such as `gpt-3.5-turbo`, use `unieai cp` to copy an existing model name to a temporary name:
 
 ```
-ollama cp llama3.2 gpt-3.5-turbo
+unieai cp llama3.2 gpt-3.5-turbo
 ```
 
 Afterwards, this new model name can be specified the `model` field:
@@ -310,7 +310,7 @@ FROM <some model>
 PARAMETER num_ctx <context size>
 ```
 
-Use the `ollama create mymodel` command to create a new model with the updated context size. Call the API with the updated model name:
+Use the `unieai create mymodel` command to create a new model with the updated context size. Call the API with the updated model name:
 
 ```shell
 curl http://localhost:11434/v1/chat/completions \

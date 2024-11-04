@@ -14,11 +14,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/discover"
-	"github.com/ollama/ollama/envconfig"
-	"github.com/ollama/ollama/format"
-	"github.com/ollama/ollama/llm"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/discover"
+	"github.com/nctu6/unieai/envconfig"
+	"github.com/nctu6/unieai/format"
+	"github.com/nctu6/unieai/llm"
 )
 
 type LlmRequest struct {
@@ -131,7 +131,7 @@ func (s *Scheduler) processPending(ctx context.Context) {
 			}
 			numParallel := int(envconfig.NumParallel())
 			// TODO (jmorganca): multimodal models don't support parallel yet
-			// see https://github.com/ollama/ollama/issues/4165
+			// see https://github.com/nctu6/unieai/issues/4165
 			if len(pending.model.ProjectorPaths) > 0 && numParallel != 1 {
 				numParallel = 1
 				slog.Warn("multimodal models don't support parallel requests yet")
@@ -177,11 +177,11 @@ func (s *Scheduler) processPending(ctx context.Context) {
 						}
 						if allReliable {
 							// HACK
-							os.Setenv("OLLAMA_MAX_LOADED_MODELS", strconv.Itoa(defaultModelsPerGPU*len(gpus)))
-							slog.Debug("updating default concurrency", "OLLAMA_MAX_LOADED_MODELS", envconfig.MaxRunners, "gpu_count", len(gpus))
+							os.Setenv("UNIEAI_MAX_LOADED_MODELS", strconv.Itoa(defaultModelsPerGPU*len(gpus)))
+							slog.Debug("updating default concurrency", "UNIEAI_MAX_LOADED_MODELS", envconfig.MaxRunners, "gpu_count", len(gpus))
 						} else {
 							// HACK
-							os.Setenv("OLLAMA_MAX_LOADED_MODELS", strconv.Itoa(len(gpus)))
+							os.Setenv("UNIEAI_MAX_LOADED_MODELS", strconv.Itoa(len(gpus)))
 							slog.Info("one or more GPUs detected that are unable to accurately report free memory - disabling default concurrency")
 						}
 					}
@@ -423,7 +423,7 @@ func (s *Scheduler) load(req *LlmRequest, ggml *llm.GGML, gpus discover.GpuInfoL
 		// show a generalized compatibility error until there is a better way to
 		// check for model compatibility
 		if errors.Is(err, llm.ErrUnsupportedFormat) || strings.Contains(err.Error(), "failed to load model") {
-			err = fmt.Errorf("%v: this model may be incompatible with your version of Ollama. If you previously pulled this model, try updating it by running `ollama pull %s`", err, req.model.ShortName)
+			err = fmt.Errorf("%v: this model may be incompatible with your version of Unieai. If you previously pulled this model, try updating it by running `unieai pull %s`", err, req.model.ShortName)
 		}
 		slog.Info("NewLlamaServer failed", "model", req.model.ModelPath, "error", err)
 		req.errCh <- err

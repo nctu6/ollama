@@ -17,7 +17,7 @@ Optionally enable debugging and more verbose logging:
 export CGO_CFLAGS="-g"
 
 # At runtime
-export OLLAMA_DEBUG=1
+export UNIEAI_DEBUG=1
 ```
 
 Get the required libraries and build the native LLM code:  (Adjust the job count based on your number of processors for a faster build)
@@ -26,16 +26,16 @@ Get the required libraries and build the native LLM code:  (Adjust the job count
 make -j 5
 ```
 
-Then build ollama:
+Then build unieai:
 
 ```bash
 go build .
 ```
 
-Now you can run `ollama`:
+Now you can run `unieai`:
 
 ```bash
-./ollama
+./unieai
 ```
 
 #### Xcode 15 warnings
@@ -101,14 +101,14 @@ ROCm requires elevated privileges to access the GPU at runtime. On most distros 
 By default, running `make` will compile a few different variations
 of the LLM library based on common CPU families and vector math capabilities,
 including a lowest-common-denominator which should run on almost any 64 bit CPU
-somewhat slowly. At runtime, Ollama will auto-detect the optimal variation to
-load. 
+somewhat slowly. At runtime, Unieai will auto-detect the optimal variation to
+load.
 
 Custom CPU settings are not currently supported in the new Go server build but will be added back after we complete the transition.
 
 #### Containerized Linux Build
 
-If you have Docker available, you can build linux binaries with `OLLAMA_NEW_RUNNERS=1 ./scripts/build_linux.sh` which has the CUDA and ROCm dependencies included. The resulting binary is placed in `./dist`
+If you have Docker available, you can build linux binaries with `unieai_NEW_RUNNERS=1 ./scripts/build_linux.sh` which has the CUDA and ROCm dependencies included. The resulting binary is placed in `./dist`
 
 ### Windows
 
@@ -118,15 +118,15 @@ The following tools are required as a minimal development environment to build C
   - https://go.dev/dl/
 - Git
   - https://git-scm.com/download/win
-- clang with gcc compat and Make.  There are multiple options on how to go about installing these tools on Windows.  We have verified the following, but others may work as well:  
+- clang with gcc compat and Make.  There are multiple options on how to go about installing these tools on Windows.  We have verified the following, but others may work as well:
   - [MSYS2](https://www.msys2.org/)
     - After installing, from an MSYS2 terminal, run `pacman -S mingw-w64-clang-x86_64-gcc-compat mingw-w64-clang-x86_64-clang make` to install the required tools
   - Assuming you used the default install prefix for msys2 above, add `C:\msys64\clang64\bin` and `c:\msys64\usr\bin` to your environment variable `PATH` where you will perform the build steps below (e.g. system-wide, account-level, powershell, cmd, etc.)
 
-> [!NOTE]  
-> Due to bugs in the GCC C++ library for unicode support, Ollama should be built with clang on windows.
+> [!NOTE]
+> Due to bugs in the GCC C++ library for unicode support, Unieai should be built with clang on windows.
 
-Then, build the `ollama` binary:
+Then, build the `unieai` binary:
 
 ```powershell
 $env:CGO_ENABLED="1"
@@ -141,7 +141,7 @@ The GPU tools require the Microsoft native build tools.  To build either CUDA or
 - Make sure to select `Desktop development with C++` as a Workload during the Visual Studio install
 - You must complete the Visual Studio install and run it once **BEFORE** installing CUDA or ROCm for the tools to properly register
 - Add the location of the **64 bit (x64)** compiler (`cl.exe`) to your `PATH`
-- Note: the default Developer Shell may configure the 32 bit (x86) compiler which will lead to build failures.  Ollama requires a 64 bit toolchain.
+- Note: the default Developer Shell may configure the 32 bit (x86) compiler which will lead to build failures.  Unieai requires a 64 bit toolchain.
 
 #### Windows CUDA (NVIDIA)
 
@@ -166,10 +166,10 @@ Enter-VsDevShell -Arch arm64 -vsinstallpath 'C:\\Program Files\\Microsoft Visual
 
 You can confirm with `write-host $env:VSCMD_ARG_TGT_ARCH`
 
-Follow the instructions at https://www.msys2.org/wiki/arm64/ to set up an arm64 msys2 environment.  Ollama requires gcc and mingw32-make to compile, which is not currently available on Windows arm64, but a gcc compatibility adapter is available via `mingw-w64-clang-aarch64-gcc-compat`. At a minimum you will need to install the following:
+Follow the instructions at https://www.msys2.org/wiki/arm64/ to set up an arm64 msys2 environment.  Unieai requires gcc and mingw32-make to compile, which is not currently available on Windows arm64, but a gcc compatibility adapter is available via `mingw-w64-clang-aarch64-gcc-compat`. At a minimum you will need to install the following:
 
 ```
 pacman -S mingw-w64-clang-aarch64-clang mingw-w64-clang-aarch64-gcc-compat mingw-w64-clang-aarch64-make make
 ```
 
-You will need to ensure your PATH includes go, cmake, gcc and clang mingw32-make to build ollama from source. (typically `C:\msys64\clangarm64\bin\`)
+You will need to ensure your PATH includes go, cmake, gcc and clang mingw32-make to build unieai from source. (typically `C:\msys64\clangarm64\bin\`)

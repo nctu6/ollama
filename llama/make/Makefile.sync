@@ -28,13 +28,13 @@ apply-patches: $(LLAMACPP_REPO)
 	@echo "Checking out $(LLAMACPP_BASE_COMMIT)"
 	@git -C $(LLAMACPP_REPO) checkout -q $(LLAMACPP_BASE_COMMIT) || \
 		git -C $(LLAMACPP_REPO) fetch --all && git -C $(LLAMACPP_REPO) checkout -q $(LLAMACPP_BASE_COMMIT)
-	@echo "Applying ollama patches..."
+	@echo "Applying unieai patches..."
 	@git -c 'user.name=nobody' -c 'user.email=<>' -C $(LLAMACPP_REPO) am -3 $(LLAMACPP_PATCH_DIR)/*.patch || \
 		echo "Please resolve the conflicts in $(LLAMACPP_REPO), and run 'git am --continue' to continue applying subsequent patches"
 	@echo ""
 	@echo "The tracking repo $(LLAMACPP_REPO) is now in a detached state with all patches applied."
 	@echo "Don't forget to commit any changes you make and run 'make create-patches' "
-	
+
 $(LLAMACPP_REPO):
 	@echo "Cloning llama.cpp to $(LLAMACPP_REPO)"
 	git clone https://github.com/ggerganov/llama.cpp.git $@
@@ -48,7 +48,7 @@ create-patches: $(LLAMACPP_REPO)
 
 # Vendoring template logic
 EXCLUDED_FILES=sgemm.cpp sgemm.h sampling_ext.cpp sampling_ext.h stb_image.h json.hpp llama_darwin.c base64.hpp
-OLLAMA_NATIVE_FILES=mllama.cpp mllama.h llama_darwin.c sampling_ext.cpp sampling_ext.h
+UNIEAI_NATIVE_FILES=mllama.cpp mllama.h llama_darwin.c sampling_ext.cpp sampling_ext.h
 define vendor_file
 $(strip $(addprefix $(2),$(notdir $1))) : $(addprefix $(LLAMACPP_REPO),$(1))
 ifneq ($$(filter-out $(EXCLUDED_FILES),$(notdir $1)),)
@@ -179,11 +179,11 @@ sync: $(LLAMACPP_REPO) .WAIT $(VENDORED_FILES) .WAIT remove-stale-files
 PATS=*.c *.h *.cpp *.m *.metal *.cu *.cuh
 NATIVE_DIRS=$(DST_DIR) $(DST_DIR)llamafile/ $(DST_DIR)ggml-cuda/ $(DST_DIR)ggml-cuda/template-instances/ $(DST_DIR)ggml-cuda/vendors/
 ALL_NATIVE_FILES=$(foreach dir,$(NATIVE_DIRS),$(wildcard $(addprefix $(dir),$(PATS))))
-EXTRA_NATIVE_FILES=$(filter-out $(VENDORED_FILES) $(addprefix $(DST_DIR),$(OLLAMA_NATIVE_FILES)), $(ALL_NATIVE_FILES))
+EXTRA_NATIVE_FILES=$(filter-out $(VENDORED_FILES) $(addprefix $(DST_DIR),$(UNIEAI_NATIVE_FILES)), $(ALL_NATIVE_FILES))
 remove-stale-files:
 	@rm -f $(EXTRA_NATIVE_FILES)
 
-.PHONY: help-sync apply-patches sync create-patches remove-stale-fails .WAIT 
+.PHONY: help-sync apply-patches sync create-patches remove-stale-fails .WAIT
 
 
 # Handy debugging for make variables

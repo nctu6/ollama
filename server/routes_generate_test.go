@@ -14,9 +14,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/discover"
-	"github.com/ollama/ollama/llm"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/discover"
+	"github.com/nctu6/unieai/llm"
 )
 
 type mockRunner struct {

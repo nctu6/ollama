@@ -15,12 +15,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/envconfig"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/envconfig"
 )
 
 func TestMaxQueue(t *testing.T) {
-	if os.Getenv("OLLAMA_TEST_EXISTING") != "" {
+	if os.Getenv("UNIEAI_TEST_EXISTING") != "" {
 		t.Skip("Max Queue test requires spawing a local server so we can adjust the queue size")
 		return
 	}
@@ -31,7 +31,7 @@ func TestMaxQueue(t *testing.T) {
 	if maxQueue := envconfig.MaxQueue(); maxQueue != 0 {
 		threadCount = int(maxQueue)
 	} else {
-		t.Setenv("OLLAMA_MAX_QUEUE", strconv.Itoa(threadCount))
+		t.Setenv("UNIEAI_MAX_QUEUE", strconv.Itoa(threadCount))
 	}
 
 	req := api.GenerateRequest{

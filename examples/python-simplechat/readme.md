@@ -1,13 +1,13 @@
 # Simple Chat Example
 
-The **chat** endpoint is one of two ways to generate text from an LLM with Ollama, and is introduced in version 0.1.14. At a high level, you provide the endpoint an array of objects with a role and content specified. Then with each output and prompt, you add more of those role/content objects, which builds up the history.
+The **chat** endpoint is one of two ways to generate text from an LLM with Unieai, and is introduced in version 0.1.14. At a high level, you provide the endpoint an array of objects with a role and content specified. Then with each output and prompt, you add more of those role/content objects, which builds up the history.
 
 ## Running the Example
 
 1. Ensure you have the `llama3.2` model installed:
 
    ```bash
-   ollama pull llama3.2
+   unieai pull llama3.2
    ```
 
 2. Install the Python Requirements.

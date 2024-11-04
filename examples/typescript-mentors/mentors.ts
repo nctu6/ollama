@@ -1,7 +1,7 @@
-import { Ollama } from 'ollama-node';
+import { Unieai } from 'unieai-node';
 
 const mentorCount = 3;
-const ollama = new Ollama();
+const unieai = new Unieai();
 type Mentor = { ns: string, char: string };
 
 function getMentors(): Mentor[] {
@@ -21,8 +21,8 @@ function getMentorFileName(mentor: Mentor): string {
 }
 
 async function getSystemPrompt(mentor: Mentor, isLast: boolean, question: string): Promise<string> {
-  ollama.setModel(getMentorFileName(mentor));
-  const info = await ollama.showModelInfo()
+  unieai.setModel(getMentorFileName(mentor));
+  const info = await unieai.showModelInfo()
   let SystemPrompt = info.system || '';
   SystemPrompt += ` You should continue the conversation as if you were ${mentor} and acknowledge the people before you in the conversation. You should adopt their mannerisms and tone, but also not use language they wouldn't use. If they are not known to know about the concept in the question, don't offer an answer. Your answer should be no longer than 1 paragraph. And definitely try not to sound like anyone else. Don't repeat any slang or phrases already used. And if it is a question the original ${mentor} wouldn't have know the answer to, just say that you don't know, in the style of ${mentor}. And think about the time the person lived. Don't use terminology that they wouldn't have used.`
 
@@ -41,11 +41,11 @@ async function main() {
 
   for await (const mentor of mentors) {
     const SystemPrompt = await getSystemPrompt(mentor, mentor === mentors[mentorCount - 1], question);
-    ollama.setModel(getMentorFileName(mentor));
-    ollama.setSystemPrompt(SystemPrompt);
+    unieai.setModel(getMentorFileName(mentor));
+    unieai.setSystemPrompt(SystemPrompt);
     let output = '';
     process.stdout.write(`\n${mentor.char}: `);
-    for await (const chunk of ollama.streamingGenerate(theConversation + `Continue the conversation as if you were ${mentor.char} on the question "${question}".`)) {
+    for await (const chunk of unieai.streamingGenerate(theConversation + `Continue the conversation as if you were ${mentor.char} on the question "${question}".`)) {
       if (chunk.response) {
         output += chunk.response;
         process.stdout.write(chunk.response);

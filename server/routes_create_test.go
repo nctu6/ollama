@@ -15,8 +15,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/ollama/ollama/api"
-	"github.com/ollama/ollama/llm"
+	"github.com/nctu6/unieai/api"
+	"github.com/nctu6/unieai/llm"
 )
 
 var stream bool = false
@@ -54,8 +54,8 @@ func (t *responseRecorder) CloseNotify() <-chan bool {
 
 func createRequest(t *testing.T, fn func(*gin.Context), body any) *httptest.ResponseRecorder {
 	t.Helper()
-	// if OLLAMA_MODELS is not set, set it to the temp directory
-	t.Setenv("OLLAMA_MODELS", cmp.Or(os.Getenv("OLLAMA_MODELS"), t.TempDir()))
+	// if UNIEAI_MODELS is not set, set it to the temp directory
+	t.Setenv("UNIEAI_MODELS", cmp.Or(os.Getenv("UNIEAI_MODELS"), t.TempDir()))
 
 	w := NewRecorder()
 	c, _ := gin.CreateTestContext(w)
@@ -90,7 +90,7 @@ func TestCreateFromBin(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	p := t.TempDir()
-	t.Setenv("OLLAMA_MODELS", p)
+	t.Setenv("UNIEAI_MODELS", p)
 
 	var s Server
 	w := createRequest(t, s.CreateHandler, api.CreateRequest{
@@ -104,7 +104,7 @@ func TestCreateFromBin(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -117,7 +117,7 @@ func TestCreateFromModel(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	p := t.TempDir()
-	t.Setenv("OLLAMA_MODELS", p)
+	t.Setenv("UNIEAI_MODELS", p)
 	var s Server
 
 	w := createRequest(t, s.CreateHandler, api.CreateRequest{
@@ -131,7 +131,7 @@ func TestCreateFromModel(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
 	})
 
 	w = createRequest(t, s.CreateHandler, api.CreateRequest{
@@ -145,8 +145,8 @@ func TestCreateFromModel(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test2", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test2", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -159,7 +159,7 @@ func TestCreateRemovesLayers(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	p := t.TempDir()
-	t.Setenv("OLLAMA_MODELS", p)
+	t.Setenv("UNIEAI_MODELS", p)
 	var s Server
 
 	w := createRequest(t, s.CreateHandler, api.CreateRequest{
@@ -173,7 +173,7 @@ func TestCreateRemovesLayers(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -193,7 +193,7 @@ func TestCreateRemovesLayers(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -207,7 +207,7 @@ func TestCreateUnsetsSystem(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	p := t.TempDir()
-	t.Setenv("OLLAMA_MODELS", p)
+	t.Setenv("UNIEAI_MODELS", p)
 	var s Server
 
 	w := createRequest(t, s.CreateHandler, api.CreateRequest{
@@ -221,7 +221,7 @@ func TestCreateUnsetsSystem(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -241,7 +241,7 @@ func TestCreateUnsetsSystem(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -264,7 +264,7 @@ func TestCreateMergeParameters(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	p := t.TempDir()
-	t.Setenv("OLLAMA_MODELS", p)
+	t.Setenv("UNIEAI_MODELS", p)
 	var s Server
 
 	w := createRequest(t, s.CreateHandler, api.CreateRequest{
@@ -278,7 +278,7 @@ func TestCreateMergeParameters(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -299,8 +299,8 @@ func TestCreateMergeParameters(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test2", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test2", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -337,8 +337,8 @@ func TestCreateMergeParameters(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test2", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test2", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -368,7 +368,7 @@ func TestCreateReplacesMessages(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	p := t.TempDir()
-	t.Setenv("OLLAMA_MODELS", p)
+	t.Setenv("UNIEAI_MODELS", p)
 	var s Server
 
 	w := createRequest(t, s.CreateHandler, api.CreateRequest{
@@ -382,7 +382,7 @@ func TestCreateReplacesMessages(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -402,8 +402,8 @@ func TestCreateReplacesMessages(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test2", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test2", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -445,7 +445,7 @@ func TestCreateTemplateSystem(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	p := t.TempDir()
-	t.Setenv("OLLAMA_MODELS", p)
+	t.Setenv("UNIEAI_MODELS", p)
 	var s Server
 
 	w := createRequest(t, s.CreateHandler, api.CreateRequest{
@@ -459,7 +459,7 @@ func TestCreateTemplateSystem(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -528,7 +528,7 @@ func TestCreateLicenses(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	p := t.TempDir()
-	t.Setenv("OLLAMA_MODELS", p)
+	t.Setenv("UNIEAI_MODELS", p)
 	var s Server
 
 	w := createRequest(t, s.CreateHandler, api.CreateRequest{
@@ -542,7 +542,7 @@ func TestCreateLicenses(t *testing.T) {
 	}
 
 	checkFileExists(t, filepath.Join(p, "manifests", "*", "*", "*", "*"), []string{
-		filepath.Join(p, "manifests", "registry.ollama.ai", "library", "test", "latest"),
+		filepath.Join(p, "manifests", "registry.unieai.ai", "library", "test", "latest"),
 	})
 
 	checkFileExists(t, filepath.Join(p, "blobs", "*"), []string{
@@ -575,7 +575,7 @@ func TestCreateDetectTemplate(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	p := t.TempDir()
-	t.Setenv("OLLAMA_MODELS", p)
+	t.Setenv("UNIEAI_MODELS", p)
 	var s Server
 
 	t.Run("matched", func(t *testing.T) {
